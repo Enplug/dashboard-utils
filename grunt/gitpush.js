@@ -1,6 +1,8 @@
 module.exports = {
     release: {
-        branch: 'master',
-        tags: true
+        options: {
+            branch: 'master',
+            tags: true
+        }
     }
 };

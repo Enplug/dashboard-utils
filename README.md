@@ -1,4 +1,4 @@
-Dependencies:
+<h2>Dependencies:</h2>
 - Lodash
 - ngDialog
 - ng-file-upload
@@ -9,32 +9,38 @@ Build Steps:
 2. npm install
 3. grunt build/watch
 
-Release Steps:
-1. add aws.private.json & gh.private.json
-2. grunt release
+Developing steps:
+1. New branch
+2. Pull request & code review
+3. Merge with master
+
+Release steps:
+1. grunt version
+2. Combine into one commit (git rebase -i head~commitnumber)
+3. add aws.private.json & gh.private.json
+4. grunt release
 
 
+What Grunt does:
 
-Build Process:
+Build:
+1. Concatenates files
+2. Minifies files
 
-1. Check for correct branch (master)
-2. Check for clean working directory (no changes to be added/committed)
-3. Check to make sure latest commit is not tagged (must commit before tagging and releasing)
+Version:
+1. Builds project
+2. Check for correct branch (master)
+3. Check for clean working directory (no changes to be added/committed)
+4. Check to make sure we're not jumping a tag (e.g. 1.0.0 to 1.0.2)
+5. Bumps version (major/minor/patch) & commits
+
+Release:
+1. Creates tag from version
+2. Pushes tag and commit (should only be one commit!) to Github
+3. (later) Upload to S3
+4. (later) Update Bower
 
 
-1. (others) create templates JS
-2. Concat JS
-3. Minify JS
-4. (later) Obfuscate JS
-4. Increment version
-5. Git add (package.json only)
-6. Git commit
-7. Git push
-8. Git create tag
-9. Compress dist into zip
-10. Git release
-11. (later) Upload to S3
-12. (later) Update Bower
 
 Git push errors?
 git config --global push.default simple

@@ -1,0 +1,4 @@
+{
+    "build": [ "concat", "uglify" ],
+    "release": [ "checkbranch:master:true", "checkrepo" ]
+}

@@ -1,7 +1,7 @@
 module.exports = function (grunt) {
 
     return {
-        dist: {
+        options: {
             // Take type dynamically from prompt
             type: grunt.config('bump.increment'),
             // Using all defaults, hard-coded here so if they change we aren't surprised
@@ -13,7 +13,7 @@ module.exports = function (grunt) {
             tagName: '%VERSION%',
             tagMessage: 'Version %VERSION%',
             push: true,
-            pushTo: 'origin' // If you get git error about upstream, run git config --global push.default simple
+            pushTo: 'origin' // If you get git error about upstream, run git config --global push.default simpl
         }
     }
 };

@@ -26,5 +26,9 @@ Build Process:
 11. (later) Upload to S3
 12. (later) Update Bower
 
+Git push errors?
+git config --global push.default simple
+git branch --set-upstream master origin/master
+
 
 Updating npm packages: Update individually. For mass-updates (be careful!) use npm-check-update

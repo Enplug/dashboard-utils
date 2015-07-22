@@ -13,7 +13,7 @@ module.exports = function (grunt) {
             tagName: '%VERSION%',
             tagMessage: 'Version %VERSION%',
             push: true,
-            pushTo: 'origin' // If you get git error about upstream, run git config --global push.default simpl
+            pushTo: 'origin'
         }
     }
 };

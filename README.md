@@ -1,8 +1,18 @@
 Dependencies:
-
 - Lodash
 - ngDialog
 - ng-file-upload
+
+
+Build Steps:
+1. git clone
+2. npm install
+3. grunt build/watch
+
+Release Steps:
+1. add aws.private.json & gh.private.json
+2. grunt release
+
 
 
 Build Process:

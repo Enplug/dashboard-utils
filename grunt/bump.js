@@ -7,11 +7,11 @@ module.exports = function (grunt) {
             // Using all defaults, hard-coded here so if they change we aren't surprised
             files: ['package.json'],
             commit: 'true',
-            commitMessage: 'Release %VERSION%',
+            commitMessage: 'Release v%VERSION%',
             commitFiles: ['package.json'],
             createTag: true,
-            tagName: '%VERSION%',
-            tagMessage: 'Version %VERSION%',
+            tagName: 'v%VERSION%',
+            tagMessage: 'Version v%VERSION%',
             push: true,
             pushTo: 'origin'
         }

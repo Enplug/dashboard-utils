@@ -3,6 +3,7 @@
 .DS_Store
 *.map
 *.private.*
+*.zip
 
 # Folders
 dist/*

@@ -12,8 +12,7 @@ module.exports = function (grunt) {
             createTag: true,
             tagName: 'v%VERSION%',
             tagMessage: 'Version v%VERSION%',
-            push: true,
-            pushTo: 'origin'
+            push: false
         }
     }
 };

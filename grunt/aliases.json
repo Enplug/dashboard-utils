@@ -1,4 +1,4 @@
 {
     "build": [ "concat", "uglify" ],
-    "release": [ "checkbranch:master:true", "checkrepo", "prompt:bump", "bump" ]
+    "release": [ "checkbranch:master:true", "checkrepo", "prompt:bump", "bump", "exec:dist", "gitpush" ]
 }

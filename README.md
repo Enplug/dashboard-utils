@@ -41,12 +41,3 @@
 2. Pushes tag and commit (should only be one commit!) to Github
 3. (later) Upload to S3
 4. (later) Update Bower
-
-
-
-*Git push errors? Try:*
-- `git config --global push.default simple`
-- `git branch --set-upstream master origin/master`
-
-
-*Updating npm packages:* Update individually. For mass-updates (be careful!) use `npm-check-update`

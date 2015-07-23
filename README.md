@@ -13,13 +13,13 @@
 <h5>Develop:</h5>
 1. New branch
 2. Pull request & code review
-3. Merge with master
+3. `grunt version`
+4. Combine into one commit (`git rebase -i head~[commitnumber]`)
+5. Merge with master
 
 <h5>Release:</h5>
-1. `grunt version`
-2. Combine into one commit (`git rebase -i head~[commitnumber]`)
-3. add `aws.private.json` & `gh.private.json`
-4. `grunt release`
+1. add `aws.private.json` & `gh.private.json`
+2. `grunt release`
 
 <h2>Notes</h2>
 

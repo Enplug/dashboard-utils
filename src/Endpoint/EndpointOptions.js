@@ -1,7 +1,9 @@
-// Todo remove deps on User, jQuery ($.param), and Lodash?
-angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment', 'Endpoints', 'User',
-    function ($log, Environment, Endpoints, User) {
+angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment', '$httpParamSerializerJQLike',
+    function ($log, Environment, $httpParamSerializerJQLike) {
         'use strict';
+
+        var persistentParams = null,
+            endpoints = null;
 
         function Options(config) {
 
@@ -19,8 +21,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
                 prepare: null,
                 params: {},
                 formData: false,
-                admin: false,
-                useToken: true,
+                useToken: true, // deprecated
                 // Callbacks, in order of when they're called
                 transformResponse: defaultTransformResponse,
                 checkResponse: defaultCheckResponse,
@@ -28,34 +29,44 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
                 success: null,
                 error: null,
                 successMessage: null,
-                errorMessage: null
+                errorMessage: null,
+                usePersistentParams: true,
+                persistentParams: persistentParams // for logging
             };
 
             var options = _.assign(availableOptions, config);
-            // Add the token to our params if we want it
-            if (options.useToken && User) {
-                _.extend(options.params, getToken(options.admin));
+
+            // Add persistent params if we want them
+            if ((options.useToken && options.usePersistentParams) && persistentParams) {
+                // params overwrite persistent params
+                options.params = _.assign(persistentParams, options.params);
             }
+
             // Check for empty param values
             checkForMissingParams(options.params);
+
             // Check make sure we have a transformResponse if we have a URL
             if (options.url && options.transformResponse !== defaultTransformResponse) {
                 $log.warn('Absolute URL given to Endpoint without custom transform response callback.');
             }
-            // If we don't have an absolute URL, build it.
+
+            // If we don't have an absolute URL, build it
             if (!options.url) {
                 options.url = getUrl(options);
             }
+
             // Prepare data with user-provided prepare function if available
             if (angular.isFunction(options.prepare)) {
                 // One of the advantages of a prepare function is we copy the data before manipulating
                 var dataCopy = _.cloneDeep(options.data);
                 options.data = options.prepare(dataCopy);
             }
+
             if (options.formData) {
                 options.headers['Content-Type'] = 'application/x-www-form-urlencoded'; // change header
-                options.data = $.param(options.data); // change data object into string compatible with form data
+                options.data = $httpParamSerializerJQLike(options.data); // change data object into string compatible with form data
             }
+
             return options;
         }
 
@@ -76,7 +87,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
         }
 
         /**
-         * Retrieves URL from Endpoints.js if using dot-notation paths. Will use monitoring host if using a
+         * Retrieves URL from endpoints if using dot-notation paths. Will use monitoring host if using a
          * monitoring endpoint. Will use plain path if no dot notation is present.
          * @param options
          * @returns {*}
@@ -101,15 +112,10 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
          * @returns {*}
          */
         function getEndpointFromPath(path) {
-            // Todo just use _.get()
             var splitPath = path.split('.');
             return splitPath.reduce(function (map, key) {
                 return map[key];
-            }, Endpoints);
-        }
-
-        function getToken(useAdmin) {
-            return { token: useAdmin ? User.root().Token : User.target().Token };
+            }, endpoints);
         }
 
         /**
@@ -145,8 +151,8 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
          *
          * Processes each result, pulling our data out from the Result: key or registering Success: false
          *
-         * @param result {{data: boolean, error: boolean, reason: string}}
-         * @returns result {{data: boolean, error: boolean, reason: string}}
+         * @param result {{data: object, error: boolean, reason: string}}
+         * @returns result {{data: object, error: boolean, reason: string}}
          */
         function defaultCheckResponse(result) {
             var data = result.data;
@@ -167,6 +173,26 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
             return result;
         }
 
-        return Options;
+        return {
 
+            new: function () {
+                return new Options();
+            },
+
+            setEndpoints: function (_endpoints) {
+                _.assign(endpoints, _endpoints);
+            },
+
+            setPersistentParam: function (key, value) {
+                persistentParams[key] = value;
+            },
+
+            unsetPersistentParam: function (key) {
+                delete persistentParams[key];
+                if (!Object.keys(persistentParams).length) {
+                    // Reset to null if no params left so that our original check for persistent params fails
+                    persistentParams = null;
+                }
+            }
+        };
     }]);

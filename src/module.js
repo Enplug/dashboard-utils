@@ -1,1 +1,4 @@
-angular.module('enplug.utils', ['ngFileUpload']);
+angular.module('enplug.utils', [
+    'enplug.utils.templates',
+    'ngFileUpload'
+]);

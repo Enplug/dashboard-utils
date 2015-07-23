@@ -1,5 +1,5 @@
-angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', 'Alerts', 'EndpointOptions',
-    function($http, $q, $log, Alerts, EndpointOptions) {
+angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', 'EndpointOptions',
+    function($http, $q, $log, EndpointOptions) {
         'use strict';
 
         /**
@@ -9,9 +9,6 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
          */
         function successCallback(data, settings) {
             // Show the success message to the user
-            if (settings.successMessage !== null) {
-                Alerts.add('success', settings.successMessage);
-            }
             if (angular.isFunction(settings.success)) {
                 settings.success(data);
             }
@@ -19,18 +16,11 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
 
         /**
          * Error callback called after every failed API response.
-         * @param data
+         * @param data String
          * @param settings
          */
         function errorCallback(data, settings) {
             // Show the failure reason to the user
-            if (settings.errorMessage !== false) {
-                var defaultError = 'Something went wrong. Error code 103.',
-                    serverError = angular.isObject(data) ? (data.reason || defaultError) : defaultError,
-                    message = (settings.errorMessage !== null) ? settings.errorMessage : serverError;
-                // Todo check for a period and format message correctly
-                Alerts.add('error', message);
-            }
             if (angular.isFunction(settings.error)) {
                 settings.error(data);
             }
@@ -38,9 +28,13 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
 
         /**
          * HTTP Request
+         * Success: returns data object
+         * Error: returns string
+         *
+         * $log.error receives full $http response during error.
          */
         return function (config) {
-            var settings = new EndpointOptions(config);
+            var settings = EndpointOptions.new(config);
             // Make the call
             return $http({
                 method: settings.method,
@@ -48,8 +42,7 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
                 url: settings.url,
                 data: settings.data,
                 params: settings.params,
-                transformResponse: settings.transformResponse,
-                ignoreLoadingBar: settings.ignoreLoadingBar
+                transformResponse: settings.transformResponse
             }).then(function (response) {
                 if (angular.isFunction(settings.checkResponse)) {
                     response.data = settings.checkResponse(response.data);
@@ -57,7 +50,7 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
                     $log.warn('Check response callback is not a valid function:', settings);
                 }
                 if (response.data.error) {
-                    $log.error('Http error, response: ', response);
+                    $log.error('API error, full $http response: ', response);
                     // Error callback registered by the caller
                     errorCallback(response.data, settings);
                     // Rejects promise and returns error message to chained promise callbacks
@@ -73,7 +66,7 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
                 successCallback(returnData, settings);
                 return returnData;
             }, function (error) {
-                $log.error('Endpoint error: ', error);
+                $log.error('HTTP error, full $http response: ', error);
                 errorCallback(error.data, settings);
                 return $q.reject(error.data.reason);
             });

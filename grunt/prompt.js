@@ -4,7 +4,7 @@ module.exports = function (grunt) {
     var currentVersion = grunt.file.readJSON('./package.json').version;
 
     return {
-        bump: {
+        version: {
             options: {
                 questions: [
                     {

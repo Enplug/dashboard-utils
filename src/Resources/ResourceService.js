@@ -2,7 +2,12 @@ angular.module('enplug.utils').service('ResourceService', ['Endpoint', '$log', '
     function (Endpoint, $log, ResourceTypes, $q, $timeout) {
         "use strict";
 
-        var checkFrequencyMilliseconds = 2000;
+        var checkFrequencyMilliseconds = 2000,
+            resourcePaths = {
+                read: '/resource',
+                byUser: '/resources/byuser',
+                remove: '/resource'
+            };
 
         /**
          * Filters resources by ResourceTypes constant values. Accepts either single string and array of types.
@@ -61,7 +66,7 @@ angular.module('enplug.utils').service('ResourceService', ['Endpoint', '$log', '
             $log.debug('Checking resource state.');
             $timeout(function () {
                 Endpoint.get({
-                    path: 'Resource.r',
+                    path: resourcePaths.read,
                     params: {
                         resourceid: resourceId
                     },
@@ -94,7 +99,7 @@ angular.module('enplug.utils').service('ResourceService', ['Endpoint', '$log', '
 
             loadResourcesByUser: function (resourceTypes, filter) {
                 return Endpoint.get({
-                    path: 'Resource.byUser',
+                    path: resourcePaths.byUser,
                     parse: function (resources) {
                         return filterResources(resources, resourceTypes, filter);
                     },
@@ -115,7 +120,7 @@ angular.module('enplug.utils').service('ResourceService', ['Endpoint', '$log', '
             removeResource: function (resourceId) {
                 $log.debug('Deleting resource:', resourceId);
                 return Endpoint.delete({
-                    path: 'Resource.delete',
+                    path: resourcePaths.remove,
                     params: {
                         resourceid: resourceId
                     },

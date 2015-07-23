@@ -2,7 +2,7 @@ module.exports = {
     options: {
         mangle: false
     },
-    dist: {
+    build: {
         files: {
             'dist/dashboard-utils.min.js': 'dist/dashboard-utils.js'
         }

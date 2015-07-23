@@ -1,12 +1,10 @@
 /**
- *
- * Todo - dependency on Alerts and Environment
- *
  * @ngdoc service
  * @name Endpoint
+ * @module enplug.utils
  * @function
  * @description
- * Core WebApp service used to interact with any API over HTTP. Uses helper files EndpointCall and EndpointOptions.
+ * Core service used to interact with any API over HTTP. Uses helper files EndpointCall and EndpointOptions.
  *
  * #General usage
  *

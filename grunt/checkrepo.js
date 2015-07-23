@@ -1,10 +1,18 @@
 module.exports = {
-    dist: {
+    version: {
         tag: {
             valid: '<%= pkg.version %>', // Check if pkg.version is valid semantic version
-            eq: '<%= pkg.version %>'    // Check if highest repo tag is lower than pkg.version
+            eq: '<%= pkg.version %>'    // Check to make sure our version is same because we haven't incremented yet
         },
-    //    tagged: false, // Require last commit (head) to not be tagged,
+        tagged: false, // make sure last commit wasn't tagged
         clean: true // Require repo to be clean (no unstaged changes)
+    },
+    release: {
+        tag: {
+            valid: '<%= pkg.version %>',
+            eq: '<%= pkg.version %>' // highest repo tag should match our current one
+        },
+        tagged: true, // make sure we're on the tagged commit
+        clean: true
     }
 };

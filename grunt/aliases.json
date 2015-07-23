@@ -1,5 +1,22 @@
 {
-    "build": [ "concat", "uglify" ],
-    "version": [ "build", "checkbranch:master:true", "checkrepo", "prompt:bump", "bump" ],
-    "release": [ "gittag", "gitpush" ]
+    "build": [
+        "html2js:build",
+        "concat:modules",
+        "concat:components",
+        "uglify:build"
+    ],
+    "version": [
+        "build",
+        "checkbranch:!master:true",
+        "checkrepo:version",
+        "prompt:version",
+        "bump"
+    ],
+    "release": [
+        "checkbranch:master:true",
+        "checkrepo:release",
+        "gittag:release",
+        "gitpush:release",
+        "s3:release"
+    ]
 }

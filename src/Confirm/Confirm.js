@@ -1,4 +1,4 @@
-angular.module('enplug.utils').service('Confirm', ['ngDialog', '_', '$sce', function (ngDialog, _, $sce) {
+angular.module('enplug.utils').service('Confirm', ['ngDialog', '$sce', function (ngDialog, $sce) {
     'use strict';
 
     // Todo have a field for More Info (bottom left?) links to help center
@@ -24,7 +24,7 @@ angular.module('enplug.utils').service('Confirm', ['ngDialog', '_', '$sce', func
             opts = _.assign(defaults, opts);
 
             return ngDialog.openConfirm({
-                template: '/js/modules/App/partials/confirm-dialog.html',
+                template: 'Confirm/confirm-dialog.tpl.html',
                 controller: ['$scope', function($scope) {
                     // controller logic
                     $scope.title = opts.title;

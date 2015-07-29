@@ -1,0 +1,31 @@
+{
+  "name": "DashboardUtils",
+  "version": "1.2.13",
+  "homepage": "https://github.com/Enplug/DashboardUtils",
+  "authors": [
+    "Alex Ross <alex@enplug.com>"
+  ],
+  "description": "Helper classes for internal Enplug app development",
+  "main": "dist/dashboard-utils.js",
+  "keywords": [
+    "enplug"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "tmp/*",
+    "*.iml",
+    "Gruntfile.js",
+    "package.json",
+    "grunt/*"
+  ],
+  "dependencies": {
+    "lodash": "~3.10.0",
+    "ngDialog": "~0.4.0",
+    "ng-file-upload": "~4.2.0"
+  }
+}

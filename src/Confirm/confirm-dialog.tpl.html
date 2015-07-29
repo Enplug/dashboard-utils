@@ -1,0 +1,10 @@
+<header>
+    <h2 ng-bind="title"></h2>
+</header>
+<section>
+    <p ng-bind-html="text"></p>
+</section>
+<footer>
+    <button class="btn btn-default" ng-bind="cancelText" ng-click="closeThisDialog()"></button>
+    <button class="btn btn-primary" ng-bind="confirmText" ng-click="confirm()"></button>
+</footer>

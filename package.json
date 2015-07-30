@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Enplug/DashboardUtils.git",
+    "url": "https://github.com/Enplug/dashboard-utils.git",
     "owner": "Enplug",
     "name": "DashboardUtils"
   },

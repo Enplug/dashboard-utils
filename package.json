@@ -1,6 +1,6 @@
 {
-  "name": "enplug-dashboard-utils",
-  "version": "1.0.1",
+  "name": "dashboard-utils",
+  "version": "1.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/Enplug/dashboard-utils.git",

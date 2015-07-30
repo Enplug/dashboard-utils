@@ -9,19 +9,21 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
             title: 'Default',
             text: 'Default',
             cancelText: 'Cancel',
-            confirmText: 'Confirm'
+            confirmText: 'Confirm',
+            confirmClass: 'btn-primary'
         },
         unsavedChangesDefaults = {
             title: 'Please Confirm',
             text: 'There are unsaved changes. Are you sure you want to continue and discard your changes?',
             cancelText: 'Cancel',
-            confirmText: 'Discard Changes'
+            confirmText: 'Discard Changes',
+            confirmClass: 'btn-primary'
         };
 
     return {
         open: function (opts) {
 
-            opts = _.assign(defaults, opts);
+            opts = _.merge({}, defaults, opts);
 
             return ngDialog.openConfirm({
                 template: 'Confirm/confirm-dialog.tpl',
@@ -31,6 +33,7 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
                     $scope.text = $sce.trustAsHtml(opts.text);
                     $scope.cancelText = opts.cancelText;
                     $scope.confirmText = opts.confirmText;
+                    $scope.confirmClass = opts.confirmClass;
                 }],
                 className: 'confirm-dialog',
                 showClose: false, // no X in the top right
@@ -39,7 +42,7 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
         },
 
         unsavedChanges: function (opts) {
-            opts = _.assign(unsavedChangesDefaults, opts);
+            opts = _.merge({}, unsavedChangesDefaults, opts);
             return this.open(opts);
         }
     };

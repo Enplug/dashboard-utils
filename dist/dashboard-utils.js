@@ -805,19 +805,21 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
             title: 'Default',
             text: 'Default',
             cancelText: 'Cancel',
-            confirmText: 'Confirm'
+            confirmText: 'Confirm',
+            confirmClass: 'btn-primary'
         },
         unsavedChangesDefaults = {
             title: 'Please Confirm',
             text: 'There are unsaved changes. Are you sure you want to continue and discard your changes?',
             cancelText: 'Cancel',
-            confirmText: 'Discard Changes'
+            confirmText: 'Discard Changes',
+            confirmClass: 'btn-primary'
         };
 
     return {
         open: function (opts) {
 
-            opts = _.assign(defaults, opts);
+            opts = _.merge({}, defaults, opts);
 
             return ngDialog.openConfirm({
                 template: 'Confirm/confirm-dialog.tpl',
@@ -827,6 +829,7 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
                     $scope.text = $sce.trustAsHtml(opts.text);
                     $scope.cancelText = opts.cancelText;
                     $scope.confirmText = opts.confirmText;
+                    $scope.confirmClass = opts.confirmClass;
                 }],
                 className: 'confirm-dialog',
                 showClose: false, // no X in the top right
@@ -835,7 +838,7 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
         },
 
         unsavedChanges: function (opts) {
-            opts = _.assign(unsavedChangesDefaults, opts);
+            opts = _.merge({}, unsavedChangesDefaults, opts);
             return this.open(opts);
         }
     };
@@ -1618,7 +1621,7 @@ angular.module('dashboard-utils-templates', ['Confirm/confirm-dialog.tpl', 'Uplo
 angular.module("Confirm/confirm-dialog.tpl", []).run(["$templateCache", function($templateCache) {
     "use strict";
     $templateCache.put("Confirm/confirm-dialog.tpl",
-        "<header><h2 ng-bind=title></h2></header><section><p ng-bind-html=text></p></section><footer><button class=\"btn btn-default\" ng-bind=cancelText ng-click=closeThisDialog()></button> <button class=\"btn btn-primary\" ng-bind=confirmText ng-click=confirm()></button></footer>");
+        "<header><h2 ng-bind=title></h2></header><section><p ng-bind-html=text></p></section><footer><button class=\"btn btn-default\" ng-bind=cancelText ng-click=closeThisDialog()></button> <button class=btn ng-class=confirmClass ng-bind=confirmText ng-click=confirm()></button></footer>");
 }]);
 
 angular.module("Upload/progress-bar.tpl", []).run(["$templateCache", function($templateCache) {

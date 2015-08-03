@@ -70,6 +70,7 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
                     method: settings.method,
                     headers: settings.headers,
                     url: settings.url,
+                    cache: settings.cache,
                     data: settings.data,
                     params: settings.params,
                     transformResponse: settings.transformResponse
@@ -103,7 +104,7 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
                 }, function (response) {
                     error(settings, 'HTTP error, full $http response: ', response);
                     errorCallback(error.data, settings);
-                    return $q.reject(error.data.reason);
+                    return $q.reject(_.get(error.data, 'reason'));
                 });
             } else {
                 error(config, 'Invalid URL given to EndpointCall. EndpointOptions:', settings);

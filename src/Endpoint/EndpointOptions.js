@@ -70,6 +70,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
                 host: null,
                 path: null,
                 endpoint: null,
+                cache: false,
                 data: null,
                 headers: {},
                 payload: null,

@@ -1,6 +1,8 @@
 angular.module('enplug.utils.environment', []).factory('Environment', ['$cookies', function ($cookies) {
     'use strict';
 
+    var cookieName = 'ENVIRONMENT';
+
     return {
         // Environment list
         PRODUCTION: 'prod',
@@ -12,7 +14,7 @@ angular.module('enplug.utils.environment', []).factory('Environment', ['$cookies
          * @returns {String}
          */
         get: function () {
-            var env = $cookies.get('env'),
+            var env = $cookies.get(cookieName),
                 hosts = {
                     'app.enplug.com': this.PRODUCTION,
                     'staging.enplug.com': this.STAGING,
@@ -23,7 +25,7 @@ angular.module('enplug.utils.environment', []).factory('Environment', ['$cookies
                 return env;
             }
             env = hosts[host] || this.STAGING;
-            $cookies.put('env', env);
+            $cookies.put(cookieName, env);
             return env;
         },
         isProduction: function () {
@@ -36,7 +38,7 @@ angular.module('enplug.utils.environment', []).factory('Environment', ['$cookies
             return this.get() === this.DEV;
         },
         setEnvironment: function (env, callback) {
-           $cookies.put('env', env);
+           $cookies.put(cookieName, env);
             if (callback) {
                 callback();
             }

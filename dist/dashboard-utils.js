@@ -1,3 +1,11 @@
+angular.module('enplug.utils.apps', ['enplug.utils.endpoint']);
+
+angular.module('enplug.utils.apps').run(function (EndpointOptions, AppEndpoints) {
+
+    // Add the app framework endpoints to the map of available endpoints
+    EndpointOptions.setEndpoints(AppEndpoints);
+});
+
 /**
  * @ngdoc service
  * @name Endpoint
@@ -784,6 +792,7 @@ angular.module('enplug.utils.upload', ['Upload/progress-bar.tpl', 'Upload/upload
 ]);
 
 angular.module('enplug.utils', [
+    'enplug.utils.apps',
     'enplug.utils.browser',
     'enplug.utils.confirm',
     'enplug.utils.endpoint',
@@ -794,6 +803,521 @@ angular.module('enplug.utils', [
     'enplug.utils.timer',
     'enplug.utils.upload'
 ]);
+
+angular.module('enplug.utils.apps').constant('AppEndpoints', {
+    App: {
+        load: '/appframework/app',
+        create: '/appframework/app/create',
+        activate: '/appframework/app/activate',
+        update: '/appframework/app/update',
+        updateResources: '/appframework/app/packages',
+        remove: '/appframework/app'
+    },
+    Apps: {
+        loadForDeveloper: '/appframework/apps',
+        loadByVenue: '/appframework/apps/byvenue',
+        loadFromStore: '/appframework/store/appinfos'
+    },
+    AppInstances: {
+        load: '/appframework/appinstance', // ?appinstanceid={id}
+        loadByVenue: '/appframework/appinstances/byvenue',
+        loadByApp: '/appframework/appinstances/byapp',
+        start: '/appframework/appinstance/start',
+        stop: '/appframework/appinstance/stop',
+        setFrequencies: '/appframework/appinstances/frequencies'
+    },
+    AppAssets: {
+        create: '/appframework/asset/create',
+        update: '/appframework/asset/update',
+        remove: '/appframework/asset',
+        bulk : {
+            create: '',
+            update: '/appframework/assets/save',
+            remove: ''
+        },
+        loadDefault: '/appframework/defaultassets/byapp',
+        createFromDefault: '/appframework/asset/create/fromdefault'
+    },
+    AppThemes: {
+        load: '/appframework/theme',
+        loadAll: '/appframework/themes/byapp',
+        create: '/appframework/theme/create',
+        remove: '/appframework/theme',
+        activate: '/appframework/appinstance/update',
+        venuesWithTheme: '/appframework/venueswiththeme'
+    }
+});
+
+angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, AppInstances, AppUtilities) {
+    'use strict';
+
+    // We automatically parse JSON assets and add the appInstanceId for convenience.
+    function parseAsset(asset, appInstanceId) {
+        AppUtilities.parseJson(asset);
+        asset.appInstanceId = appInstanceId;
+        return asset;
+    }
+
+    // We remove empty properties from payload because server needs us to. Supposedly, haven't fully confirmed.
+    function removeEmptyProperties(payload) {
+        // don't send empty keys
+        _.forOwn(payload.Value, function (v, k) {
+            if (v === '') {
+                delete payload[k];
+            }
+        });
+        return payload;
+    }
+
+    return {
+
+        /**
+         * Creates a new asset, and updates assets stored in service.
+         * @param appInstanceId
+         * @param value
+         * @param name
+         */
+        createAsset: function (appInstanceId, value, name) {
+            return Endpoint.post({
+                path: 'AppAssets.create',
+                data: {
+                    AppInstanceId: appInstanceId,
+                    AssetName: _.isUndefined(name) ? 'ObjectAsset' : name,
+                    Value: _.isObject(value) ? JSON.stringify(value) : value
+                },
+                prepare: removeEmptyProperties,
+                parse: function (asset) {
+                    return parseAsset(asset, appInstanceId);
+                }
+            });
+        },
+
+        /**
+         * Removes an asset, and removes from assets stored in service
+         * @param appInstanceId
+         * @param assetId
+         */
+        removeAsset: function (appInstanceId, assetId) {
+            return Endpoint.delete({
+                path: 'AppAssets.remove',
+                params: {
+                    appinstanceid: appInstanceId,
+                    assetid: assetId
+                }
+            });
+        },
+
+        /**
+         * Updates an existing asset, and updates the asset stored in service.
+         * @param appInstanceId
+         * @param assetId
+         * @param value
+         */
+        updateAsset: function (appInstanceId, assetId, value) {
+            return Endpoint.post({
+                path: 'AppAssets.update',
+                data: {
+                    AppInstanceId: appInstanceId,
+                    AssetId: assetId,
+                    Value: angular.isObject(value) ? JSON.stringify(value) : value
+                },
+                prepare: removeEmptyProperties,
+                parse: function (asset) {
+                    return parseAsset(asset, appInstanceId);
+                }
+            });
+        },
+
+        // FIXME what is payload's structure?
+        bulkCreateAssets: function (payload) {
+            return Endpoint.post({
+                path: 'AppAssets.bulk.create',
+                data: payload,
+                prepare: removeEmptyProperties,
+                parse: function (asset) {
+                    asset.Assets.forEach(function (indvidualAsset){
+                        parseAsset(indvidualAsset, payload.Assets[0].AppInstanceId);
+                    });
+                    return asset;
+                }
+            });
+        },
+
+        bulkUpdateAsset: function (appInstanceId, assets) {
+            return Endpoint.post({
+                path: 'AppAssets.bulk.update',
+                data: {
+                    AppInstanceId: appInstanceId,
+                    Assets: assets
+                },
+                prepare: removeEmptyProperties
+            });
+        },
+
+        // FIXME what is payload's structure?
+        bulkRemoveAssets: function (payload) {
+            return Endpoint.post({
+                path: 'Apps.bulk.remove',
+                data: payload,
+                prepare: removeEmptyProperties
+            });
+        },
+
+        /**
+         * Returns default assets for app id like "rss"
+         * @param appId
+         */
+        getDefaultAssets: function (appId) {
+            return Endpoint.get({
+                path: 'AppAssets.loadDefault',
+                params: { AppId: appId },
+                parse: function (assets) {
+                    return AppUtilities.parseJson(assets);
+                }
+            });
+        },
+
+        createAssetFromDefault: function (appInstanceId, defaultAssetId) {
+            return Endpoint.post({
+                path: 'AppAssets.createFromDefault',
+                data: {
+                    AppInstanceId: appInstanceId,
+                    DefaultAssetId: defaultAssetId
+                },
+                parse: function (asset) {
+                    return parseAsset(asset, appInstanceId);
+                }
+            });
+        }
+    };
+});
+
+angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, AppUtilities, CacheFactory, _) {
+    'use strict';
+
+    // FIXME: when to invalidate/update cache of an app instance
+
+    var instancesCache = CacheFactory('instances');
+
+    var service = {
+
+        loadInstance: function (instanceId) {
+            return Endpoint.get({
+                path: 'AppInstances.load',
+                params: { appinstanceid: instanceId },
+                // We want to return the app instance already in the array, if there is one (there always should be)
+                parse: function (instance) {
+                    AppUtilities.parseJson(instance.Assets);
+                    return instance;
+                }
+            });
+        },
+
+        /**
+         * Loads all instances for a user and stores them to be retrieved later.
+         * @param venueId
+         */
+        loadInstances: function (venueId) {
+            return Endpoint.get({
+                path: 'AppInstances.loadByVenue',
+                cache: instancesCache,
+                params: {
+                    returnAll: true,
+                    venueid: venueId
+                },
+                parse: function (result) {
+                    // Mark misconfigured apps
+                    var instances = result.AppInstanceResponses;
+                    _.each(result.MisconfiguredApps, function (misconfiguredApp) {
+                        var instance = _.findWhere(instances, { AppId: misconfiguredApp.AppId });
+                        instance._isMisconfigured = true;
+                    });
+                    _.each(instances, function (instance) {
+                        // Parse JSON complex assets ahead of time
+                        AppUtilities.parseJson(instance.Assets);
+                    });
+                    return instances;
+                }
+            });
+        },
+
+        loadInstanceByApp: function (displayId, appId) {
+            return service.loadInstances(displayId).then(function (instances) {
+                return _.findWhere(instances, { AppId: appId });
+            });
+        },
+
+        enableApp: function (app, venue, triggers) {
+            // venue parameter could be object or venue id
+            var venueId = _.isObject(venue) ? venue.Id : venue,
+            // app could be object or id
+                appId = _.isObject(app) ? app.Id : app;
+
+            return Endpoint.post({
+                path: 'AppInstances.start',
+                data: {
+                    AppId: appId,
+                    VenueId: venueId,
+                    Triggers: triggers
+                }
+            });
+        },
+
+        disableApp: function (instance, venue) {
+            // venue parameter could be object or venue id
+            var venueId = _.isObject(venue) ? venue.Id : venue;
+            return Endpoint.post({
+                path: 'AppInstances.stop',
+                data: {
+                    AppInstanceId: _.isObject(instance) ? instance.Id : instance
+                }
+            });
+        },
+
+        updateFrequencies: function (venueId, appInstances) {
+            var frequencies = [];
+            _.each(appInstances, function (appInstance) {
+                frequencies.push({
+                    AppInstanceId: appInstance.Id || appInstance.instanceId,
+                    Frequency: parseInt(appInstance.duration, 10)
+                });
+            });
+            return Endpoint.post({
+                path: 'Apps.setFrequencies',
+                data: {
+                    VenueId: venueId,
+                    Frequencies: frequencies
+                }
+            });
+        },
+
+        /**
+         * Admin and Developer method for loading all instances of an app.
+         * @param app
+         */
+        loadInstancesForApp: function (app) {
+            var appId = _.isObject(app) ? app.AppId : app;
+            return Endpoint.get({
+                admin: true,
+                path: 'AppInstances.loadByApp',
+                params: {
+                    appid: appId,
+                    returnAll: true
+                }
+            });
+        }
+    };
+
+    return service;
+});
+
+angular.module('enplug.utils.apps').factory('AppThemes', function (Endpoint) {
+    'use strict';
+    return {
+
+        /**
+         * Get themes array by App ID
+         */
+        loadThemes: function (appId) {
+            return Endpoint.get({
+                path: 'AppThemes.loadAll',
+                params: {
+                    appid: appId
+                }
+            });
+        },
+
+        /**
+         * Returns a theme object for a given theme ID
+         */
+        getTheme: function (themeId) {
+            return Endpoint.get({
+                path: 'AppThemes.load',
+                params: {
+                    themeid: themeId
+                }
+            });
+        },
+
+        /**
+         * Returns a list of venues that are using the specific theme
+         * @param theme
+         * @returns {*}
+         */
+        venuesWithTheme: function (theme) {
+            return Endpoint.get({
+                path: 'AppThemes.venuesWithTheme',
+                params: {
+                    themeid: theme.id //Id not AppId
+                }
+            });
+        },
+
+        /**
+         * Takes a theme package and creates a new theme for a given app
+         * theme = { Name, AppID, Assets, IsDefault }
+         */
+        createTheme: function (theme) {
+            return Endpoint.post({
+                path: 'AppThemes.create',
+                data: theme,
+                admin: theme.IsDefault // use admin token when generating default themes
+            });
+        },
+
+        /**
+         * Takes an instance ID and theme ID to be activated
+         */
+        activateTheme: function (appInstanceId, themeId) {
+            return Endpoint.post({
+                path: 'AppThemes.activate',
+                data: {
+                    AppInstanceId: appInstanceId,
+                    ThemeId: themeId
+                }
+            });
+        },
+
+        /**
+         * Deletes a theme by theme ID
+         */
+        deleteTheme: function (themeId, admin) {
+            return Endpoint.delete({
+                path: 'AppThemes.remove',
+                params: {
+                    themeid: themeId
+                },
+                admin: admin
+            });
+        }
+    };
+});
+
+angular.module('enplug.utils.apps').factory('AppUtilities', function (_) {
+    return {
+        /**
+         * Accepts either array of assets or individual asset
+         * @param assets
+         */
+        parseJson: function (assets) {
+            if (_.isArray(assets)) {
+                _.each(assets, function (asset) {
+                    if (_.isJSON(asset.Value)) {
+                        asset.Value = JSON.parse(asset.Value);
+                    }
+                });
+            } else {
+                if (_.isJSON(assets.Value)) {
+                    assets.Value = JSON.parse(assets.Value);
+                }
+            }
+            return assets;
+        }
+    };
+});
+
+angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFactory) {
+    'use strict';
+
+    var appsCache = CacheFactory('appsCache', {
+            maxAge: 1000 * 60 * 60 * 24 // 1 day
+        }),
+        appCache = CacheFactory('appCache');
+    return {
+
+        loadDeveloperApps: function () {
+            return Endpoint.get({
+                path: 'Apps.loadForDeveloper'
+            });
+        },
+
+        loadAppsByVenue: function (venueId) {
+            return Endpoint.get({
+                path: 'Apps.loadByVenue',
+                params: { venueId: venueId },
+                cache: appsCache
+            });
+        },
+
+        loadFromStore: function () {
+            return Endpoint.get({
+                path: 'Apps.loadFromStore',
+                cache: appsCache
+            });
+        },
+
+        loadApp: function (appId) {
+            return Endpoint.get({
+                path: 'App.load',
+                params: { appid: appId },
+                cache: appCache // TODO: cache with app ID as key
+            });
+        },
+
+        createApp: function (app) {
+            return Endpoint.post({
+                path: 'App.create',
+                data: app,
+                success: function () {
+                    appCache.removeAll();
+                }
+            });
+        },
+
+        activateApp: function (app) {
+            return Endpoint.post({
+                path: 'App.activate',
+                data: { AppId: app.Id },
+                success: function () {
+                    appsCache.removeAll();
+                }
+            });
+        },
+
+        updateApp: function (app) {
+            return Endpoint.post({
+                path: 'App.update',
+                data: app,
+                success: function () {
+                    appsCache.removeAll();
+                    appCache.removeAll();
+                }
+            });
+        },
+
+        updateResources: function (appId, packageId, jarId) {
+            return Endpoint.post({
+                path: 'App.updateResources',
+                data: {
+                    AppId: appId,
+                    PackageResourceId: packageId,
+                    JarResourceId: jarId
+                },
+                success: function () {
+                    appsCache.removeAll();
+                    appCache.removeAll();
+                }
+            });
+        },
+
+        /**
+         * Only call when the app has no instances
+         */
+        deleteApp: function (app) {
+            return Endpoint.delete({
+                path: 'App.remove',
+                params: {
+                    appid: app.AppId
+                },
+                success: function () {
+                    appsCache.removeAll();
+                    appCache.removeAll();
+                }
+            });
+        }
+    };
+
+});
 
 angular.module('enplug.utils.browser', []).factory('Browser', function () {
     'use strict';
@@ -1247,7 +1771,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
             },
 
             setEndpoints: function (_endpoints) {
-                _.assign(endpoints, _endpoints);
+                _.merge(endpoints, _endpoints);
             },
 
             setPersistentParam: function (key, value) {

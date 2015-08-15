@@ -1,4 +1,5 @@
 angular.module('enplug.utils', [
+    'enplug.utils.apps',
     'enplug.utils.browser',
     'enplug.utils.confirm',
     'enplug.utils.endpoint',
@@ -6,6 +7,5 @@ angular.module('enplug.utils', [
     'enplug.utils.libraries',
     'enplug.utils.mixins',
     'enplug.utils.resource',
-    'enplug.utils.timer',
-    'enplug.utils.upload'
+    'enplug.utils.timer'
 ]);

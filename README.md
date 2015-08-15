@@ -5,6 +5,7 @@
 - ng-file-upload
 - angular-sanitize
 - angular-cookies
+- angular-cache
 
 <h2>Contributing</h2>
 

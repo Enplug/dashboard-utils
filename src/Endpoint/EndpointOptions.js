@@ -237,7 +237,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
             },
 
             setEndpoints: function (_endpoints) {
-                _.assign(endpoints, _endpoints);
+                _.merge(endpoints, _endpoints);
             },
 
             setPersistentParam: function (key, value) {

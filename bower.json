@@ -1,6 +1,6 @@
 {
   "name": "enplug-dashboard-utils",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "homepage": "https://github.com/Enplug/DashboardUtils",
   "authors": [
     "Alex Ross <alex@enplug.com>"
@@ -25,7 +25,6 @@
   ],
   "dependencies": {
     "lodash": "~3.10.0",
-    "ngDialog": "~0.4.0",
-    "ng-file-upload": "~4.2.0"
+    "ngDialog": "~0.4.0"
   }
 }

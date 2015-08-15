@@ -24,10 +24,10 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
         create: '/appframework/asset/create',
         update: '/appframework/asset/update',
         remove: '/appframework/asset',
-        bulk : {
-            create: '',
+        bulk: {
+            create: '/appframework/assets/create',
             update: '/appframework/assets/save',
-            remove: ''
+            remove: '/appframework/assets/delete'
         },
         loadDefault: '/appframework/defaultassets/byapp',
         createFromDefault: '/appframework/asset/create/fromdefault'

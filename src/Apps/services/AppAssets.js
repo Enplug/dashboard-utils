@@ -107,7 +107,7 @@ angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, App
         // FIXME what is payload's structure?
         bulkRemoveAssets: function (payload) {
             return Endpoint.post({
-                path: 'Apps.bulk.remove',
+                path: 'AppAssets.bulk.remove',
                 data: payload,
                 prepare: removeEmptyProperties
             });

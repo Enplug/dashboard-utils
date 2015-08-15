@@ -678,119 +678,6 @@ angular.module('enplug.utils.resource', []).service('ResourceService', ['Endpoin
         return service;
     }
 ]);
-angular.module('enplug.utils.upload', ['Upload/progress-bar.tpl', 'Upload/upload-button.tpl']).service('epUpload', [
-    '$rootScope', '$q', '$log', 'Upload',
-    function ($rootScope, $q, $log, Upload) {
-
-        // inherit function taken from window.util, factored out.
-        // Todo refactor this
-        function inherits(ctor, superCtor) {
-            ctor.super_ = superCtor;
-            ctor.prototype = Object.create(superCtor.prototype, {
-                constructor: {
-                    value: ctor,
-                    enumerable: false,
-                    writeable: true,
-                    configurable: true
-                }
-            });
-        }
-
-        var _Upload = function (file, settings) {
-            if (!(this instanceof _Upload)) {
-                console.log('File: ', file);
-                console.log('SettingsL ', settings);
-                return new _Upload(file, settings);
-            }
-
-            EventEmitter.call(this);
-
-            var
-                _settings = angular.copy(settings),
-                defaultSettings = {
-                    url: '/resources',
-                    file: file,
-                    fileFormDataName: 'Filedata',
-                    ignoreLoadingBar: true
-                };
-
-            delete _settings.file;
-            _settings.data = _.isFunction(_settings.data) ? _settings.data(file) : _settings.data;
-            console.log('Data Settings: ', _settings.data);
-            this.settings = angular.extend(defaultSettings, _settings || {});
-
-            return this;
-        };
-
-        inherits(_Upload, EventEmitter);
-
-        _Upload.prototype.start = function () {
-            var
-                deferred = $q.defer(),
-                self = this;
-
-            this.emit('start');
-
-            // Fire the upload account
-            Upload
-                .upload(self.settings)
-                .progress(onProgress)
-                .success(onSuccess)
-                .error(onError)
-                .then(function () {
-                    //
-                });
-
-            /**
-             * handler for progress events, emits progress in percentage
-             * @param {Object} event
-             */
-            function onProgress(event) {
-                var percent = parseInt(100.0 * event.loaded / event.total);
-                if (percent === 100) {
-                    percent = 95;
-                }
-
-                self.emit('progress', percent);
-            }
-
-            /**
-             * handler for when upload finishes, emits success + reuslt
-             * @param {Object} data
-             * @param status
-             * @param headers
-             * @param config
-             */
-            function onSuccess(data, status, headers, config) {
-                self.emit('finished', data.Result);
-
-                if (data.Success !== true || typeof data.Result === 'undefined') {
-                    self.emit('finished', new Error(), data.Result);
-                    deferred.reject(new Error());
-                } else {
-                    self.emit('finished', null, data.Result);
-                    deferred.resolve(data.Result);
-                }
-            }
-
-            /**
-             * error handler for upload stream, emits error
-             * @param data
-             * @param status
-             * @param headers
-             * @param config
-             */
-            function onError(data, status, headers, config) {
-                self.emit('error', new Error());
-            }
-
-            return deferred.promise;
-        };
-
-        return _Upload;
-    }
-]);
-
 angular.module('enplug.utils', [
     'enplug.utils.apps',
     'enplug.utils.browser',
@@ -800,8 +687,7 @@ angular.module('enplug.utils', [
     'enplug.utils.libraries',
     'enplug.utils.mixins',
     'enplug.utils.resource',
-    'enplug.utils.timer',
-    'enplug.utils.upload'
+    'enplug.utils.timer'
 ]);
 
 angular.module('enplug.utils.apps').constant('AppEndpoints', {
@@ -830,10 +716,10 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
         create: '/appframework/asset/create',
         update: '/appframework/asset/update',
         remove: '/appframework/asset',
-        bulk : {
-            create: '',
+        bulk: {
+            create: '/appframework/assets/create',
             update: '/appframework/assets/save',
-            remove: ''
+            remove: '/appframework/assets/delete'
         },
         loadDefault: '/appframework/defaultassets/byapp',
         createFromDefault: '/appframework/asset/create/fromdefault'
@@ -957,7 +843,7 @@ angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, App
         // FIXME what is payload's structure?
         bulkRemoveAssets: function (payload) {
             return Endpoint.post({
-                path: 'Apps.bulk.remove',
+                path: 'AppAssets.bulk.remove',
                 data: payload,
                 prepare: removeEmptyProperties
             });
@@ -1980,232 +1866,10 @@ angular.module('enplug.utils.timer', []).factory('Timer', ['$rootScope', '$timeo
 
     return service;
 }]);
-/**
- * Created by aleross on 7/22/15. Copyright (c) Enplug, Inc.
- */
-
-angular.module('enplug.utils').controller('ProgressBarController', ['$scope', '$log', '$timeout', function ($scope, $log, $timeout) {
-    $scope.progress = 0;
-    $scope.showing = false;
-
-    $scope.$on('startProgress', function () {
-        $log.debug('Starting upload progress.');
-        $scope.showing = true;
-        $scope.progress = 0;
-    });
-
-    $scope.$on('updateProgress', function (event, percent) {
-        $scope.progress = percent;
-    });
-
-    $scope.$on('completeProgress', function () {
-        $scope.progress = 100;
-        $timeout(function () {
-            $log.debug('Complete upload progress.');
-            $scope.showing = false;
-            $scope.progress = 0;
-        }, 1000);
-    });
-}]);
-angular.module('enplug.utils').directive('progressBar', [
-    '$log', '$timeout',
-    function ($log, $timeout) {
-        return {
-            templateUrl: '/js/modules/App/partials/progress-bar.html',
-            link: function ($scope, $element, $attrs) {
-                console.log('Loaded progress bar.');
-                $scope.progress = 0;
-                $scope.showing = false;
-
-                $scope.$on('startProgress', function () {
-                    $log.debug('Starting upload progress.');
-                    $scope.showing = true;
-                    $scope.progress = 0;
-                });
-
-                $scope.$on('updateProgress', function (event, percent) {
-                    $scope.progress = percent;
-                });
-
-                $scope.$on('completeProgress', function () {
-                    $scope.progress = 100;
-                    $timeout(function () {
-                        $log.debug('Complete upload progress.');
-                        $scope.showing = false;
-                        $scope.progress = 0;
-                    }, 1000);
-                });
-
-            }
-        };
-    }
-]);
-angular.module('enplug.utils').directive('upload', ['$rootScope', '$log', 'Upload', 'Environment',
-    function ($rootScope, $log, Upload, Environment) {
-        'use strict';
-
-        var maxFileSize = 100000000; //
-
-        return {
-            templateUrl: 'Upload/upload-button.tpl.html', // Todo include progress bar
-            replace: true,
-            scope: {
-                settings: '=settings'
-            },
-            link: function ($scope, $element) {
-
-                /////////////////////////////////////////////////////////
-                //
-                // Initialization
-                //
-                /////////////////////////////////////////////////////////
-
-                var settings;
-
-                function init(_settings) {
-                    settings = angular.copy(_settings || $scope.settings || {});
-                    if (!settings.dropzone && !settings.hideFilename) {
-                        settings.showFilename = true;
-                    }
-                    if (settings.multiple) {
-                        // recompile element with multiple flag
-                        $element.find('input').attr('multiple', true);
-                    }
-                    if (!settings.accept) {
-                        settings.accept = '*';
-                    }
-                    // Add host and token to url
-                    settings.url = Environment.host() + settings.url;
-                    if (!settings.label) {
-                        settings.label = 'Upload';
-                    }
-                    $scope.uploadLabel = settings.label;
-                    // Random ID to allow label-input click connection
-                    $scope.uploadId = Math.floor(Math.random() * (1000 + 1)) + 0;
-                    $scope.settings = settings;
-                }
-
-                init($scope.settings);
-
-                /////////////////////////////////////////////////////////
-                //
-                // Upload Lifecycle
-                //
-                /////////////////////////////////////////////////////////
-
-                function startUpload($file) {
-                    $scope.$broadcast('startProgress');
-
-                    // We allow passing in a function as data in case we need to get access to the file name or
-                    // other file attributes
-                    var fields = _.isFunction(settings.fields) ? settings.fields($file) : settings.fields;
-                    // Fire the upload account
-                    Upload.upload({
-                        url: settings.url,
-                        fields: fields,
-                        file: $file,
-                        fileFormDataName: 'Filedata',
-                        ignoreLoadingBar: true
-                    })
-                        .progress(uploadProgress)
-                        .success(uploadSuccess)
-                        .error(uploadError)
-                        .then(function () {
-                            $scope.uploadPercent = 0;
-                        });
-                    $scope.fileName = $file.name;
-                }
-
-                // Process progress events
-                function uploadProgress(event) {
-                    var percent = parseInt(100.0 * event.loaded / event.total);
-                    if (percent === 100) {
-                        percent = 95;
-                    }
-                    $scope.$broadcast('updateProgress', percent);
-                }
-
-                function uploadSuccess(data, status, headers, config) {
-                    var resource = data.Result;
-                    if (data.Success === true && !_.isUndefined(resource)) {
-                        $log.debug('Successful upload: ', resource);
-                        complete(resource);
-                    } else {
-                        error(data);
-                    }
-                    $scope.$broadcast('completeProgress');
-                }
-
-                function complete(resource) {
-                    if (_.isFunction(settings.success)) {
-                        settings.success(resource);
-                    }
-                    $scope.successfulUpload = true;
-                }
-
-                function error(data) {
-                    $log.debug('Unsuccessful upload.');
-                    if (_.isFunction(settings.error)) {
-                        settings.error(data);
-                    }
-                }
-
-                function uploadError(data, status, headers, config) {
-                    $log.error('Upload error.');
-                }
-
-
-                /////////////////////////////////////////////////////////
-                //
-                // Page Actions
-                //
-                /////////////////////////////////////////////////////////
-
-                $scope.process = function ($files) {
-                    // call onDrop function if exists
-                    settings.onSelect && settings.onSelect($files);
-
-                    // autoupload files by default unless explicitly stated not to
-                    if (typeof settings.autoUpload === 'undefined' || settings.autoUpload) {
-                        $scope.upload($files);
-                    }
-                };
-
-                $scope.upload = function ($files) {
-                    $files.forEach(function ($file) {
-                        if ($file.size <= maxFileSize) {
-                            $scope.fileName = $file.name;
-                            startUpload($file);
-                        } else {
-                            window.alert('This file is larger than the maximum allowed size (100 MBs).'); // Todo replace with variable
-                        }
-                    });
-                };
-
-                $rootScope.$on('upload', function (e, uploadSettings, file) {
-                    init(uploadSettings);
-                    $scope.upload([file]);
-                });
-            }
-        };
-    }
-]);
-angular.module('dashboard-utils-templates', ['Confirm/confirm-dialog.tpl', 'Upload/progress-bar.tpl', 'Upload/upload-button.tpl']);
+angular.module('dashboard-utils-templates', ['Confirm/confirm-dialog.tpl']);
 
 angular.module("Confirm/confirm-dialog.tpl", []).run(["$templateCache", function($templateCache) {
     "use strict";
     $templateCache.put("Confirm/confirm-dialog.tpl",
         "<header><h2 ng-bind=title></h2></header><section><p ng-bind-html=text></p></section><footer><button class=\"btn btn-default\" ng-bind=cancelText ng-click=closeThisDialog()></button> <button class=btn ng-class=confirmClass ng-bind=confirmText ng-click=confirm()></button></footer>");
-}]);
-
-angular.module("Upload/progress-bar.tpl", []).run(["$templateCache", function($templateCache) {
-    "use strict";
-    $templateCache.put("Upload/progress-bar.tpl",
-        "");
-}]);
-
-angular.module("Upload/upload-button.tpl", []).run(["$templateCache", function($templateCache) {
-    "use strict";
-    $templateCache.put("Upload/upload-button.tpl",
-        "<div class=upload-wrapper><label ng-show=settings.hideFilename class=\"btn btn-primary btn-sm\" for=\"upload-{{ uploadId }}\"><i class=\"icon icon-cloud-upload\"></i> <span ng-bind=uploadLabel></span></label><div ng-show=settings.showFilename><div ng-hide=successfulUpload><label class=\"btn btn-default\" for=\"upload-{{ uploadId }}\" ng-bind=uploadLabel></label></div><div ng-show=successfulUpload><label class=upload-filename ng-bind=fileName for=\"upload-{{ uploadId }}\" title=\"Click to change.\"></label></div></div><div ng-show=settings.dropzone><label for=\"upload-{{ uploadId }}\" ngf-drop=process($files) ngf-drag-over-class=dropzone-hover><img src=/img/icons/new-upload.png class=\"img-responsive\"></label></div><input style=\"display: none\" id=\"upload-{{ uploadId }}\" type=file ngf-max-size=100000000 ngf-select=process($files) accept=\"{{ settings.accept }}\"><div class=progress-wrapper ng-controller=ProgressBarController ng-show=showing><p><strong>Uploading File:</strong> <span ng-bind=fileName></span></p><div progressbar class=\"progress-striped active\" value=progress type=success><span>{{ progress }}%</span></div></div></div>");
 }]);

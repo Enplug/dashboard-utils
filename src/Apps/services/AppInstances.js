@@ -26,7 +26,7 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
         loadInstances: function (venueId) {
             return Endpoint.get({
                 path: 'AppInstances.loadByVenue',
-                cache: instancesCache,
+            //    cache: instancesCache,
                 params: {
                     returnAll: true,
                     venueid: venueId

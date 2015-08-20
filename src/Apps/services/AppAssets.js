@@ -19,6 +19,23 @@ angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, App
         return payload;
     }
 
+    function prepareBulkAssets(payload) {
+        payload.Assets.forEach(function (asset) {
+            removeEmptyProperties(asset);
+            if (typeof asset.Value === 'object') {
+                asset.Value = JSON.stringify(asset.Value);
+            }
+        });
+        return payload;
+    }
+
+    function parseBulkAssetsResponse(response) {
+        response.Assets.forEach(function (asset) {
+            AppUtilities.parseJson(asset);
+        });
+        return response.Assets;
+    }
+
     return {
 
         /**
@@ -81,48 +98,51 @@ angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, App
         /**
          * Creates multiple assets at once.
          *
-         * @param payload [{ AppInstanceId: <id>, Value: <id> }]
+         * @param assets [{ AppInstanceId: <id>, AssetName: <name>, Value: <id> }]
          * @returns {*|HttpPromise}
          */
-        bulkCreateAssets: function (payload) {
+        bulkCreateAssets: function (assets) {
             return Endpoint.post({
                 path: 'AppAssets.bulk.create',
-                data: payload,
-                prepare: removeEmptyProperties,
-                parse: function (asset) {
-                    asset.Assets.forEach(function (indvidualAsset){
-                        parseAsset(indvidualAsset, payload.Assets[0].AppInstanceId);
-                    });
-                    return asset;
-                }
+                data: {
+                    Assets: assets
+                },
+                prepare: prepareBulkAssets,
+                parse: parseBulkAssetsResponse
             });
         },
 
         /**
          * Updates multiple assets at once.
          *
-         * @param payload [{ AppInstanceId: <id>, AssetId: <id>, Value: <value> }]
+         * @param assets [{ AppInstanceId: <id>, AssetId: <id>, Value: <value> }]
          * @returns {*|HttpPromise}
          */
-        bulkUpdateAsset: function (payload) {
+        bulkUpdateAsset: function (assets) {
             return Endpoint.post({
                 path: 'AppAssets.bulk.update',
-                data: payload,
-                prepare: removeEmptyProperties
+                data: {
+                    Assets: assets
+                },
+                prepare: prepareBulkAssets,
+                parse: parseBulkAssetsResponse
+
+                // FIXME parse the response
             });
         },
 
         /**
          * Removes multiple assets at once.
          *
-         * @param payload [{ AppInstanceId: <id>, AssetId: <id> }]
+         * @param assets [{ AppInstanceId: <id>, AssetId: <id> }]
          * @returns {*|HttpPromise}
          */
-        bulkRemoveAssets: function (payload) {
+        bulkRemoveAssets: function (assets) {
             return Endpoint.post({
                 path: 'AppAssets.bulk.remove',
-                data: payload,
-                prepare: removeEmptyProperties
+                data: {
+                    Assets: assets
+                }
             });
         },
 

@@ -814,7 +814,12 @@ angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, App
             });
         },
 
-        // FIXME what is payload's structure?
+        /**
+         * Creates multiple assets at once.
+         *
+         * @param payload [{ AppInstanceId: <id>, Value: <id> }]
+         * @returns {*|HttpPromise}
+         */
         bulkCreateAssets: function (payload) {
             return Endpoint.post({
                 path: 'AppAssets.bulk.create',
@@ -829,18 +834,26 @@ angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, App
             });
         },
 
-        bulkUpdateAsset: function (appInstanceId, assets) {
+        /**
+         * Updates multiple assets at once.
+         *
+         * @param payload [{ AppInstanceId: <id>, AssetId: <id>, Value: <value> }]
+         * @returns {*|HttpPromise}
+         */
+        bulkUpdateAsset: function (payload) {
             return Endpoint.post({
                 path: 'AppAssets.bulk.update',
-                data: {
-                    AppInstanceId: appInstanceId,
-                    Assets: assets
-                },
+                data: payload,
                 prepare: removeEmptyProperties
             });
         },
 
-        // FIXME what is payload's structure?
+        /**
+         * Removes multiple assets at once.
+         *
+         * @param payload [{ AppInstanceId: <id>, AssetId: <id> }]
+         * @returns {*|HttpPromise}
+         */
         bulkRemoveAssets: function (payload) {
             return Endpoint.post({
                 path: 'AppAssets.bulk.remove',

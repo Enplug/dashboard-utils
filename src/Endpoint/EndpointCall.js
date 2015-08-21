@@ -30,6 +30,7 @@ angular.module('enplug.utils').factory('EndpointCall',
             if (!document.getElementById('noisey-endpoint')) {
                 var iframe = document.createElement('iframe');
                 iframe.src = '//loading.enplug.com';
+                iframe.style.display = 'none';
                 iframe.setAttribute('id', 'noisy-iframe');
                 document.body.appendChild(iframe);
             }

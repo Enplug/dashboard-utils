@@ -1333,8 +1333,8 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
     };
 }]);
 
-angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', 'EndpointOptions',
-    function($http, $q, $log, EndpointOptions) {
+angular.module('enplug.utils').factory('EndpointCall',
+    function($http, $q, $log, $timeout, EndpointOptions) {
         'use strict';
 
         function debug(config, message, data) {
@@ -1361,6 +1361,23 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
             log(config, message, data, 'error');
         }
 
+        function startBrowserLoading() {
+            if (!document.getElementById('noisey-endpoint')) {
+                var iframe = document.createElement('iframe');
+                iframe.src = '//loading.enplug.com';
+                iframe.setAttribute('id', 'noisy-iframe');
+                document.body.appendChild(iframe);
+            }
+            return iframe;
+        }
+
+        function stopBrowserLoading(iframe) {
+            if (iframe) {
+                $timeout(function () {
+                    iframe.remove();
+                }, 200);
+            }
+        }
 
         /**
          * Success callback called after every successful API response.
@@ -1400,6 +1417,13 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
             var settings = EndpointOptions.new(config);
             if (_.isString(settings.url)) {
                 debug(settings, 'Making EndpointCall with EndpointOptions:', settings);
+
+                // If enabled, start the browser loading indicator
+                if (settings.noisy) {
+                    debug(settings, 'Trigger browser loading state.');
+                    var iframe = startBrowserLoading();
+                }
+
                 // Make the call
                 return $http({
                     method: settings.method,
@@ -1440,6 +1464,8 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
                     error(settings, 'HTTP error, full $http response: ', response);
                     errorCallback(error.data, settings);
                     return $q.reject(_.get(error.data, 'reason'));
+                }).finally(function () {
+                    stopBrowserLoading(iframe);
                 });
             } else {
                 error(config, 'Invalid URL given to EndpointCall. EndpointOptions:', settings);
@@ -1449,7 +1475,8 @@ angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '
             }
         };
 
-    }]);
+    }
+);
 
 angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment', '$httpParamSerializerJQLike',
     function ($log, Environment, $httpParamSerializerJQLike) {

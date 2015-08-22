@@ -24,7 +24,6 @@
     "grunt"
   ],
   "dependencies": {
-    "lodash": "~3.10.0",
-    "ngDialog": "~0.4.0"
+    "lodash": "~3.10.0"
   }
 }

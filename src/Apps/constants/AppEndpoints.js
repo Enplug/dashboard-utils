@@ -10,13 +10,14 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
     Apps: {
         loadForDeveloper: '/appframework/apps',
         loadByVenue: '/appframework/apps/byvenue',
-        loadFromStore: '/appframework/store/appinfos'
+        loadFromStore: '/appframework/store/appinfos',
+        saveStoreInfo: '/appframework/store/appinfos',
+        loadReviewsByApp: '/appframework/store/appreviews'
     },
     AppInstances: {
         load: '/appframework/appinstance', // ?appinstanceid={id}
-        loadByApp: '/appframework/appinstance/byvenue',
-        loadAllByVenue: '/appframework/appinstances/byvenue',
-        loadAllByApp: '/appframework/appinstances/byapp',
+        loadByVenue: '/appframework/appinstances/byvenue',
+        loadByApp: '/appframework/appinstances/byapp',
         start: '/appframework/appinstance/start',
         stop: '/appframework/appinstance/stop',
         setFrequencies: '/appframework/appinstances/frequencies'

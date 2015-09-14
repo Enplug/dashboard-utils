@@ -25,7 +25,7 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
          */
         loadInstances: function (venueId) {
             return Endpoint.get({
-                path: 'AppInstances.loadByVenue',
+                path: 'AppInstances.loadAllByVenue',
             //    cache: instancesCache,
                 params: {
                     returnAll: true,
@@ -48,8 +48,16 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
         },
 
         loadInstanceByApp: function (displayId, appId) {
-            return service.loadInstances(displayId).then(function (instances) {
-                return _.findWhere(instances, { AppId: appId });
+            return Endpoint.get({
+                path: 'AppInstances.loadByApp',
+                params: {
+                    venueid: displayId,
+                    appid: appId
+                },
+                parse: function (instance) {
+                    AppUtilities.parseJson(instance.Assets);
+                    return instance;
+                }
             });
         },
 
@@ -105,7 +113,7 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             var appId = _.isObject(app) ? app.AppId : app;
             return Endpoint.get({
                 admin: true,
-                path: 'AppInstances.loadByApp',
+                path: 'AppInstances.loadAllByApp',
                 params: {
                     appid: appId,
                     returnAll: true

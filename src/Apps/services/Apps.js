@@ -24,7 +24,7 @@ angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFac
         loadFromStore: function (id) {
             return Endpoint.get({
                 path: 'Apps.loadFromStore',
-                params: { appid: id },
+                params: { appid: id},
                 cache: appsCache
             });
         },
@@ -33,7 +33,7 @@ angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFac
             return Endpoint.get({
                 path: 'Apps.saveStoreInfo',
                 data: appInfo,
-                cache: appCache
+                cache: appsCache
             });
         },
 
@@ -41,7 +41,7 @@ angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFac
             return Endpoint.get({
                 path: 'Apps.loadReviewsByApp',
                 params: { appid: id },
-                cache: appCache
+                cache: appsCache
             });
         },
 

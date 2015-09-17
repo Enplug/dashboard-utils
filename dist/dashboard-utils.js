@@ -922,6 +922,16 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
 
     var instancesCache = CacheFactory('instances');
 
+    var eventMetrics = [],
+        valueMetrics = [];
+
+    var metrics = {
+        Event: [],
+        Value: [],
+        Rate: []
+    };
+    metrics[metric.MetricType].push(metric);
+
     var service = {
 
         loadInstance: function (instanceId) {
@@ -978,12 +988,10 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         },
 
-        enableApp: function (app, venue, triggers) {
-            // venue parameter could be object or venue id
-            var venueId = _.isObject(venue) ? venue.Id : venue,
-            // app could be object or id
-                appId = _.isObject(app) ? app.Id : app;
+        startApp: function (appId, venueId) {
 
+            // Hard-coded because they don't change between apps
+            var triggers = [{ TriggerType: 'Interaction' }, { TriggerType: 'TimePercentage' }];
             return Endpoint.post({
                 path: 'AppInstances.start',
                 data: {
@@ -994,13 +1002,11 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         },
 
-        disableApp: function (instance, venue) {
-            // venue parameter could be object or venue id
-            var venueId = _.isObject(venue) ? venue.Id : venue;
+        stopApp: function (instanceId) {
             return Endpoint.post({
                 path: 'AppInstances.stop',
                 data: {
-                    AppInstanceId: _.isObject(instance) ? instance.Id : instance
+                    AppInstanceId: instanceId
                 }
             });
         },

@@ -35,7 +35,7 @@ angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFac
         },
 
         saveStoreInfo: function (appInfo) {
-            return Endpoint.get({
+            return Endpoint.post({
                 path: 'Apps.saveStoreInfo',
                 data: appInfo
             });

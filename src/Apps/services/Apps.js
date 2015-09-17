@@ -21,21 +21,27 @@ angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFac
             });
         },
 
-        loadFromStore: function (id) {
+        loadFromStore: function () {
             return Endpoint.get({
-                path: 'Apps.loadFromStore',
+                path: 'Apps.loadFromStore'
+            });
+        },
+
+        loadFromStoreByApp: function (id) {
+            return Endpoint.get({
+                path: 'Apps.loadFromStoreByApp',
                 params: { appid: id }
             });
         },
 
         saveStoreInfo: function (appInfo) {
-            return Endpoint.get({
+            return Endpoint.post({
                 path: 'Apps.saveStoreInfo',
                 data: appInfo
             });
         },
 
-        loadReviews: function (id) {
+        loadAppReviews: function (id) {
             return Endpoint.get({
                 path: 'Apps.loadReviewsByApp',
                 params: { appid: id }

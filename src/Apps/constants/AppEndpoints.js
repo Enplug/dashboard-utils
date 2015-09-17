@@ -11,7 +11,8 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
         loadForDeveloper: '/appframework/apps',
         loadByVenue: '/appframework/apps/byvenue',
         loadFromStore: '/appframework/store/appinfos',
-        saveStoreInfo: '/appframework/store/appinfos',
+        loadFromStoreByApp: '/appframework/store/appinfo',
+        saveStoreInfo: '/appframework/store/appinfo',
         loadReviewsByApp: '/appframework/store/appreviews'
     },
     AppInstances: {

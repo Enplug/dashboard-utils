@@ -702,7 +702,10 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
     Apps: {
         loadForDeveloper: '/appframework/apps',
         loadByVenue: '/appframework/apps/byvenue',
-        loadFromStore: '/appframework/store/appinfos'
+        loadFromStore: '/appframework/store/appinfos',
+        loadFromStoreByApp: '/appframework/store/appinfo',
+        saveStoreInfo: '/appframework/store/appinfo',
+        loadReviewsByApp: '/appframework/store/appreviews'
     },
     AppInstances: {
         load: '/appframework/appinstance', // ?appinstanceid={id}
@@ -1169,8 +1172,28 @@ angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFac
 
         loadFromStore: function () {
             return Endpoint.get({
-                path: 'Apps.loadFromStore',
-                cache: appsCache
+                path: 'Apps.loadFromStore'
+            });
+        },
+
+        loadFromStoreByApp: function (id) {
+            return Endpoint.get({
+                path: 'Apps.loadFromStoreByApp',
+                params: { appid: id }
+            });
+        },
+
+        saveStoreInfo: function (appInfo) {
+            return Endpoint.post({
+                path: 'Apps.saveStoreInfo',
+                data: appInfo
+            });
+        },
+
+        loadAppReviews: function (id) {
+            return Endpoint.get({
+                path: 'Apps.loadReviewsByApp',
+                params: { appid: id }
             });
         },
 

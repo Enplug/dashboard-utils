@@ -922,16 +922,6 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
 
     var instancesCache = CacheFactory('instances');
 
-    var eventMetrics = [],
-        valueMetrics = [];
-
-    var metrics = {
-        Event: [],
-        Value: [],
-        Rate: []
-    };
-    metrics[metric.MetricType].push(metric);
-
     var service = {
 
         loadInstance: function (instanceId) {

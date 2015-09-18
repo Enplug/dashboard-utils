@@ -717,6 +717,7 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
         setFrequencies: '/appframework/appinstances/frequencies'
     },
     AppAssets: {
+        loadAll: '/appframework/assets',
         create: '/appframework/asset/create',
         update: '/appframework/asset/update',
         remove: '/appframework/asset',
@@ -777,6 +778,14 @@ angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, App
     }
 
     return {
+
+        loadByInstance: function (instanceId) {
+            return Endpoint.get({
+                path: 'AppAssets.loadAll',
+                params: { appinstanceid: instanceId },
+                parse: parseBulkAssetsResponse
+            })
+        },
 
         /**
          * Creates a new asset, and updates assets stored in service.

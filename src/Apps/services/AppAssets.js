@@ -38,6 +38,14 @@ angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, App
 
     return {
 
+        loadByInstance: function (instanceId) {
+            return Endpoint.get({
+                path: 'AppAssets.loadAll',
+                params: { appinstanceid: instanceId },
+                parse: parseBulkAssetsResponse
+            })
+        },
+
         /**
          * Creates a new asset, and updates assets stored in service.
          * @param appInstanceId

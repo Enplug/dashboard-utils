@@ -1,11 +1,9 @@
 <h2>Dependencies:</h2>
 - angularjs 1.4+
 - Lodash
-- ngDialog
-- ng-file-upload
+- ngDialog (Confirm)
 - angular-sanitize
 - angular-cookies
-- angular-cache
 
 <h2>Contributing</h2>
 

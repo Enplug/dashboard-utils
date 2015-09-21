@@ -1,16 +1,13 @@
-angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, AppUtilities, CacheFactory, _) {
+angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, AppUtilities, _) {
     'use strict';
 
-    // FIXME: when to invalidate/update cache of an app instance
-
-    var instancesCache = CacheFactory('instances');
-
-    var service = {
+    return {
 
         loadInstance: function (instanceId) {
             return Endpoint.get({
                 path: 'AppInstances.load',
                 params: { appinstanceid: instanceId },
+
                 // We want to return the app instance already in the array, if there is one (there always should be)
                 parse: function (instance) {
                     AppUtilities.parseJson(instance.Assets);
@@ -26,12 +23,12 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
         loadInstances: function (venueId) {
             return Endpoint.get({
                 path: 'AppInstances.loadAllByVenue',
-            //    cache: instancesCache,
                 params: {
                     returnAll: true,
                     venueid: venueId
                 },
                 parse: function (result) {
+
                     // Mark misconfigured apps
                     var instances = result.AppInstanceResponses;
                     _.each(result.MisconfiguredApps, function (misconfiguredApp) {
@@ -39,6 +36,7 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
                         instance._isMisconfigured = true;
                     });
                     _.each(instances, function (instance) {
+
                         // Parse JSON complex assets ahead of time
                         AppUtilities.parseJson(instance.Assets);
                     });
@@ -78,9 +76,7 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
         stopApp: function (instanceId) {
             return Endpoint.post({
                 path: 'AppInstances.stop',
-                data: {
-                    AppInstanceId: instanceId
-                }
+                data: { AppInstanceId: instanceId }
             });
         },
 
@@ -117,6 +113,4 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         }
     };
-
-    return service;
 });

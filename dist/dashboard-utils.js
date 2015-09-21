@@ -1,6 +1,7 @@
 angular.module('enplug.utils.apps', ['enplug.utils.endpoint']);
 
 angular.module('enplug.utils.apps').run(function (EndpointOptions, AppEndpoints) {
+    'use strict';
 
     // Add the app framework endpoints to the map of available endpoints
     EndpointOptions.setEndpoints(AppEndpoints);
@@ -923,19 +924,16 @@ angular.module('enplug.utils.apps').factory('AppAssets', function (Endpoint, App
     };
 });
 
-angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, AppUtilities, CacheFactory, _) {
+angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, AppUtilities, _) {
     'use strict';
 
-    // FIXME: when to invalidate/update cache of an app instance
-
-    var instancesCache = CacheFactory('instances');
-
-    var service = {
+    return {
 
         loadInstance: function (instanceId) {
             return Endpoint.get({
                 path: 'AppInstances.load',
                 params: { appinstanceid: instanceId },
+
                 // We want to return the app instance already in the array, if there is one (there always should be)
                 parse: function (instance) {
                     AppUtilities.parseJson(instance.Assets);
@@ -951,12 +949,12 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
         loadInstances: function (venueId) {
             return Endpoint.get({
                 path: 'AppInstances.loadAllByVenue',
-            //    cache: instancesCache,
                 params: {
                     returnAll: true,
                     venueid: venueId
                 },
                 parse: function (result) {
+
                     // Mark misconfigured apps
                     var instances = result.AppInstanceResponses;
                     _.each(result.MisconfiguredApps, function (misconfiguredApp) {
@@ -964,6 +962,7 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
                         instance._isMisconfigured = true;
                     });
                     _.each(instances, function (instance) {
+
                         // Parse JSON complex assets ahead of time
                         AppUtilities.parseJson(instance.Assets);
                     });
@@ -1003,9 +1002,7 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
         stopApp: function (instanceId) {
             return Endpoint.post({
                 path: 'AppInstances.stop',
-                data: {
-                    AppInstanceId: instanceId
-                }
+                data: { AppInstanceId: instanceId }
             });
         },
 
@@ -1042,8 +1039,6 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         }
     };
-
-    return service;
 });
 
 angular.module('enplug.utils.apps').factory('AppThemes', function (Endpoint) {
@@ -1151,26 +1146,19 @@ angular.module('enplug.utils.apps').factory('AppUtilities', function (_) {
     };
 });
 
-angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFactory) {
+angular.module('enplug.utils.apps').factory('Apps', function (Endpoint) {
     'use strict';
 
-    var appsCache = CacheFactory('appsCache', {
-            maxAge: 1000 * 60 * 60 * 24 // 1 day
-        }),
-        appCache = CacheFactory('appCache');
     return {
 
         loadDeveloperApps: function () {
-            return Endpoint.get({
-                path: 'Apps.loadForDeveloper'
-            });
+            return Endpoint.get({ path: 'Apps.loadForDeveloper' });
         },
 
         loadAppsByVenue: function (venueId) {
             return Endpoint.get({
                 path: 'Apps.loadByVenue',
-                params: { venueId: venueId },
-                cache: appsCache
+                params: { venueId: venueId }
             });
         },
 
@@ -1204,39 +1192,28 @@ angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFac
         loadApp: function (appId) {
             return Endpoint.get({
                 path: 'App.load',
-                params: { appid: appId },
-                cache: appCache // TODO: cache with app ID as key
+                params: { appid: appId }
             });
         },
 
         createApp: function (app) {
             return Endpoint.post({
                 path: 'App.create',
-                data: app,
-                success: function () {
-                    appCache.removeAll();
-                }
+                data: app
             });
         },
 
         activateApp: function (app) {
             return Endpoint.post({
                 path: 'App.activate',
-                data: { AppId: app.Id },
-                success: function () {
-                    appsCache.removeAll();
-                }
+                data: { AppId: app.Id }
             });
         },
 
         updateApp: function (app) {
             return Endpoint.post({
                 path: 'App.update',
-                data: app,
-                success: function () {
-                    appsCache.removeAll();
-                    appCache.removeAll();
-                }
+                data: app
             });
         },
 
@@ -1247,27 +1224,14 @@ angular.module('enplug.utils.apps').factory('Apps', function (Endpoint, CacheFac
                     AppId: appId,
                     PackageResourceId: packageId,
                     JarResourceId: jarId
-                },
-                success: function () {
-                    appsCache.removeAll();
-                    appCache.removeAll();
                 }
             });
         },
 
-        /**
-         * Only call when the app has no instances
-         */
         deleteApp: function (app) {
             return Endpoint.delete({
                 path: 'App.remove',
-                params: {
-                    appid: app.AppId
-                },
-                success: function () {
-                    appsCache.removeAll();
-                    appCache.removeAll();
-                }
+                params: { appid: app.AppId }
             });
         }
     };

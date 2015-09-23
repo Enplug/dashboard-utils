@@ -80,14 +80,14 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         },
 
-        updateFrequencies: function (venueId, appInstances, isNum) {
+        updateFrequencies: function (venueId, appInstances, isText) {
             var frequencies = [];
             _.each(appInstances, function (appInstance) {
                 frequencies.push({
                     AppInstanceId: appInstance.Id || appInstance.instanceId,
                     
                     //Old accounts may still use numbers
-                    Frequency: isNum ? parseInt(appInstance.duration, 10) : appInstance.duration
+                    Frequency: isText ? appInstance.duration : parseInt(appInstance.duration, 10)
                 });
             });
             return Endpoint.post({

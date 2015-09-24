@@ -98,6 +98,19 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
                 }
             });
         },
+        
+        updateFrequency: function (displayId, appInstance) {
+            return Endpoint.post({
+                path: 'Apps.setFrequencies',
+                data: {
+                    VenueId: venueId,
+                    Frequencies: {
+                        AppInstanceId: appInstance.Id,
+                        Frequency: appInstance.duration
+                    }
+                }
+            });
+        },
 
         /**
          * Admin and Developer method for loading all instances of an app.

@@ -103,12 +103,14 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         },
 
-        updateFrequencies: function (venueId, appInstances) {
+        updateFrequencies: function (venueId, appInstances, isText) {
             var frequencies = [];
             _.each(appInstances, function (appInstance) {
                 frequencies.push({
                     AppInstanceId: appInstance.Id || appInstance.instanceId,
-                    Frequency: parseInt(appInstance.duration, 10)
+                    
+                    //Old accounts may still use numbers
+                    Frequency: isText ? appInstance.duration : parseInt(appInstance.duration, 10)
                 });
             });
             return Endpoint.post({
@@ -116,6 +118,19 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
                 data: {
                     VenueId: venueId,
                     Frequencies: frequencies
+                }
+            });
+        },
+        
+        updateFrequency: function (displayId, appInstance) {
+            return Endpoint.post({
+                path: 'Apps.setFrequencies',
+                data: {
+                    VenueId: venueId,
+                    Frequencies: {
+                        AppInstanceId: appInstance.Id,
+                        Frequency: appInstance.duration
+                    }
                 }
             });
         },

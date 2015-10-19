@@ -112,7 +112,7 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
                 });
             });
             return Endpoint.post({
-                path: 'apps.freqLevel',
+                path: 'Apps.setFrequencies',
                 data: {
                     VenueId: venueId,
                     UseFrequencyLevels: true,

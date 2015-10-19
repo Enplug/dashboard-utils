@@ -107,14 +107,15 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             var frequencies = [];
             _.each(appInstances, function (appInstance) {
                 frequencies.push({
-                    AppInstanceId: appInstance.Id || appInstance.instanceId,
-                    Frequency: parseInt(appInstance.duration, 10)
+                    AppInstanceId: appInstance.Id,
+                    FrequencyLevel: appInstance.FrequencyLevel
                 });
             });
             return Endpoint.post({
-                path: 'Apps.setFrequencies',
+                path: 'apps.freqLevel',
                 data: {
                     VenueId: venueId,
+                    UseFrequencyLevels: true,
                     Frequencies: frequencies
                 }
             });

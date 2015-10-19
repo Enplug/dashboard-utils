@@ -45,6 +45,29 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         },
 
+        /**
+         * Loads instances and assets for an account. If no accountId provide, takes account from token used
+         * @param appId
+         * @param accountId
+         */
+        loadInstancesForAccountByApp: function (appId, accountId) {
+            var params = { appid: appId };
+            if (accountId) {
+                params.accountid = accountId;
+            }
+            return Endpoint.get({
+                path: 'AppInstances.loadForAccountByApp',
+                params: params,
+                parse: function (instances) {
+                    instances.forEach(function (instance) {
+                        AppUtilities.parseJson(instance.Assets);
+                    });
+
+                    return instances;
+                }
+            })
+        },
+
         loadInstanceByApp: function (displayId, appId) {
             return Endpoint.get({
                 path: 'AppInstances.loadByApp',

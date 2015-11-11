@@ -5,5 +5,6 @@ angular.module('enplug.utils', [
     'enplug.utils.endpoint',
     'enplug.utils.environment',
     'enplug.utils.libraries',
-    'enplug.utils.mixins'
+    'enplug.utils.mixins',
+    'enplug.utils.resource'
 ]);

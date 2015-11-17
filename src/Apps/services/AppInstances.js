@@ -91,7 +91,8 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
                 data: {
                     AppId: appId,
                     VenueId: venueId,
-                    Triggers: triggers
+                    Triggers: triggers,
+                    FrequencyLevel: 'Medium'
                 }
             });
         },
@@ -99,7 +100,10 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
         stopApp: function (instanceId) {
             return Endpoint.post({
                 path: 'AppInstances.stop',
-                data: { AppInstanceId: instanceId }
+                data: {
+                    AppInstanceId: instanceId,
+                    UseFrequencyLevels: true
+                }
             });
         },
 

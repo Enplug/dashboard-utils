@@ -23,7 +23,8 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
         loadForAccountByApp: '/appframework/assets/byaccount',
         start: '/appframework/appinstance/start',
         stop: '/appframework/appinstance/stop',
-        setFrequencies: '/appframework/appinstances/frequencies'
+        setFrequencies: '/appframework/appinstances/frequencies',
+        setFrequency: '/appframework/appinstance/frequency'
     },
     AppAssets: {
         loadAll: '/appframework/assets',

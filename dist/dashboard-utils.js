@@ -715,7 +715,8 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
         loadForAccountByApp: '/appframework/assets/byaccount',
         start: '/appframework/appinstance/start',
         stop: '/appframework/appinstance/stop',
-        setFrequencies: '/appframework/appinstances/frequencies'
+        setFrequencies: '/appframework/appinstances/frequencies',
+        setFrequency: '/appframework/appinstance/frequency'
     },
     AppAssets: {
         loadAll: '/appframework/assets',
@@ -1048,6 +1049,17 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
                     VenueId: venueId,
                     UseFrequencyLevels: true,
                     Frequencies: frequencies
+                }
+            });
+        },
+
+        updateFrequency: function (venueId, instanceId, frequencyLevel) {
+            return Endpoint.post({
+                path: 'AppInstances.setFrequency',
+                data: {
+                    VenueId: venueId,
+                    AppInstanceId: instanceId,
+                    FrequencyLevel: frequencyLevel
                 }
             });
         },

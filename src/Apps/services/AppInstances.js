@@ -125,6 +125,17 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         },
 
+        updateFrequency: function (venueId, instanceId, frequencyLevel) {
+            return Endpoint.post({
+                path: 'AppInstances.setFrequency',
+                data: {
+                    VenueId: venueId,
+                    AppInstanceId: instanceId,
+                    FrequencyLevel: frequencyLevel
+                }
+            });
+        },
+
         /**
          * Admin and Developer method for loading all instances of an app.
          * @param app

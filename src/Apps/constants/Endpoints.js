@@ -17,7 +17,7 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
     },
     AppInstances: {
         load: '/appframework/appinstance', // ?appinstanceid={id}
-        loadByApp: '/appframework/appinstance/byvenue',
+        loadAppInfo: '/appframework/appinstance/info',
         loadAllByVenue: '/appframework/appinstances/byvenue',
         loadAllByApp: '/appframework/appinstances/byapp',
         loadForAccountByApp: '/appframework/assets/byaccount',

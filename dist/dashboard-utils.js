@@ -709,7 +709,7 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
     },
     AppInstances: {
         load: '/appframework/appinstance', // ?appinstanceid={id}
-        loadByApp: '/appframework/appinstance/byvenue',
+        loadAppInfo: '/appframework/appinstance/info',
         loadAllByVenue: '/appframework/appinstances/byvenue',
         loadAllByApp: '/appframework/appinstances/byapp',
         loadForAccountByApp: '/appframework/assets/byaccount',
@@ -935,8 +935,6 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             return Endpoint.get({
                 path: 'AppInstances.load',
                 params: { appinstanceid: instanceId },
-
-                // We want to return the app instance already in the array, if there is one (there always should be)
                 parse: function (instance) {
                     AppUtilities.parseJson(instance.Assets);
                     return instance;
@@ -974,7 +972,8 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
         },
 
         /**
-         * Loads instances and assets for an account. If no accountId provide, takes account from token used
+         * Loads instances and assets for an account. If no accountId provide, takes account from token used.
+         * Used for chain apps, like graphics.
          * @param appId
          * @param accountId
          */
@@ -996,12 +995,16 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             })
         },
 
-        loadInstanceByApp: function (displayId, appId) {
+        /**
+         * Returns app info and instance info if a venue ID is provided.
+         */
+        loadAppInfo: function (accountId, appId, venueId) {
             return Endpoint.get({
-                path: 'AppInstances.loadByApp',
+                path: 'AppInstances.loadAppInfo',
                 params: {
-                    venueid: displayId,
-                    appid: appId
+                    accountid: accountId,
+                    appid: appId,
+                    venueid: venueId
                 },
                 parse: function (instance) {
                     AppUtilities.parseJson(instance.Assets);

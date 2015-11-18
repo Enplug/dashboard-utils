@@ -78,9 +78,12 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
                     appid: appId,
                     venueid: venueId
                 },
-                parse: function (instance) {
-                    AppUtilities.parseJson(instance.Assets);
-                    return instance;
+                parse: function (app) {
+                    if (app['AppInstance']) {
+                        AppUtilities.parseJson(app['AppInstance']['Assets']);
+                    }
+
+                    return app;
                 }
             });
         },

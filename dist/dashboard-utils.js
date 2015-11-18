@@ -998,11 +998,10 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
         /**
          * Returns app info and instance info if a venue ID is provided.
          */
-        loadAppInfo: function (accountId, appId, venueId) {
+        loadAppInfo: function (appId, venueId) {
             return Endpoint.get({
                 path: 'AppInstances.loadAppInfo',
                 params: {
-                    accountid: accountId,
                     appid: appId,
                     venueid: venueId
                 },

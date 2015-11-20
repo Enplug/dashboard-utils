@@ -1197,8 +1197,11 @@ angular.module('enplug.utils.apps').factory('Apps', function (Endpoint) {
 
     return {
 
-        loadDeveloperApps: function () {
-            return Endpoint.get({ path: 'Apps.loadForDeveloper' });
+        loadDeveloperApps: function (accountId) {
+            return Endpoint.get({
+                path: 'Apps.loadForDeveloper',
+                params: { accountid: accountId }
+            });
         },
 
         loadAppsByVenue: function (venueId) {

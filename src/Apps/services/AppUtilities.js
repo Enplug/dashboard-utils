@@ -7,14 +7,14 @@ angular.module('enplug.utils.apps').factory('AppUtilities', function (_) {
         parseJson: function (assets) {
             if (_.isArray(assets)) {
                 _.each(assets, function (asset) {
-                    if (_.isJSON(asset.Value)) {
+                    try {
                         asset.Value = JSON.parse(asset.Value);
-                    }
+                    } catch (e) {}
                 });
             } else {
-                if (_.isJSON(assets.Value)) {
+                try {
                     assets.Value = JSON.parse(assets.Value);
-                }
+                } catch (e) {}
             }
             return assets;
         }

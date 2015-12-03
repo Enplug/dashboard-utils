@@ -1488,6 +1488,13 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
 
     var cookieName = 'ENVIRONMENT';
 
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(window.location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
     // https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
     function getCookie(sKey) {
         if (!sKey) {
@@ -1528,7 +1535,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
      * @returns {String}
      */
     this.get = function () {
-        var env = getCookie(cookieName),
+        var env = getParameterByName(cookieName.toLowerCase()) || getCookie(cookieName),
             hosts = {
                 'dashboard.enplug.com': this.PRODUCTION,
                 'staging.enplug.com': this.STAGING

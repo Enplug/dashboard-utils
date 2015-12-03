@@ -3,6 +3,12 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
 
     var cookieName = 'ENVIRONMENT';
 
+    // Environment list
+    this.PRODUCTION = 'prod';
+    this.STAGING = 'staging';
+    this.DEV = 'dev';
+
+    // Returns query parameter value ?environment=X
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -11,6 +17,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     }
 
     // https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+    // Returns session cookie value ENVIRONMENT=X
     function getCookie(sKey) {
         if (!sKey) {
             return null;
@@ -18,6 +25,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
     }
 
+    // Sets session cookie value ENVIRONMENT=X
     function setCookie(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
         if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) {
             return false;
@@ -40,45 +48,47 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         return true;
     }
 
-    // Environment list
-    this.PRODUCTION = 'prod';
-    this.STAGING = 'staging';
-    this.DEV = 'dev';
+    // Returns an environment based on default key-value between domain
+    // and inferred environment
+    function defaultEnvironment(context) {
+        var hosts = {
+                'dashboard.enplug.com': context.PRODUCTION,
+                'staging.enplug.com': context.STAGING
+            },
+            host = window.location.hostname;
+
+        return hosts[host] || context.STAGING;
+    }
 
     /**
-     * Returns a string name of the current environment from cookies, param, or inferred from host name
+     * Returns a string name of the current environment from param, cookies, or inferred from host name
+     * Settings are returned in that order
      * @returns {String}
      */
     this.get = function () {
 
-        // first check if we have a manual environment stored in session cookies
-        var env = getCookie(cookieName),
-            hosts = {
-                'dashboard.enplug.com': this.PRODUCTION,
-                'staging.enplug.com': this.STAGING
-            },
-            host = window.location.hostname;
+        // first check if we have a manual environment stored in query parameter
+        var param = getParameterByName(cookieName.toLowerCase()),
+            session = getCookie(cookieName);
 
-        // Make sure the cookie matches a valid host
-        if (this.hosts()[env]) {
-            return env;
+        // Make sure the environment matches a valid host
+        if (this.hosts()[param]) {
+
+            // store for future sessions, because
+            // the URL will change but the environment should stay the same
+            setCookie(cookieName, param);
+            return param;
         }
 
-        // Check to see if environment is stored as query parameter
-        var param = getParameterByName(cookieName.toLowerCase());
-
-        // Make sure the param is a valid setting and store for future sessions, because
-        // the URL will change but the environment should stay the same
-        if (this.hosts()[param]) {
-            env = param;
-            setCookie(cookieName, env);
+        // Otherwise, see if we've stored an environment in a cookie
+        // from setEnvironment or a previous query param
+        if (this.hosts()[session]) {
+            return session;
         } else {
 
             // Default environment settings by host, or staging default
-            env =  hosts[host] || this.STAGING;
+            return defaultEnvironment(this);
         }
-
-        return env;
     };
 
     this.isProduction = function () {

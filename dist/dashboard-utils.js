@@ -1530,9 +1530,8 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     this.get = function () {
         var env = getCookie(cookieName),
             hosts = {
-                'app.enplug.com': this.PRODUCTION,
-                'staging.enplug.com': this.STAGING,
-                'dev.enplug.com': this.DEV
+                'dashboard.enplug.com': this.PRODUCTION,
+                'staging.enplug.com': this.STAGING
             },
             host = window.location.hostname;
         if (angular.isString(env)) {

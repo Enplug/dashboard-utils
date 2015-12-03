@@ -50,16 +50,31 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
      * @returns {String}
      */
     this.get = function () {
-        var env = getParameterByName(cookieName.toLowerCase()) || getCookie(cookieName),
+        var env = getCookie(cookieName),
             hosts = {
                 'dashboard.enplug.com': this.PRODUCTION,
                 'staging.enplug.com': this.STAGING
             },
             host = window.location.hostname;
-        if (angular.isString(env)) {
+
+        // Make sure the cookie is a valid host
+        if (this.hosts()[env]) {
             return env;
         }
-        env = hosts[host] || this.STAGING;
+
+        // Check to see if environment is stored as query parameter
+        var param = getParameterByName(cookieName.toLowerCase());
+
+        // Make sure the param is a valid setting
+        if (this.hosts()[param]) {
+            env = param;
+        } else {
+
+            // Default environment settings by host, or staging default
+            env =  hosts[host] || this.STAGING;
+        }
+
+        // Persist whatever we found as a cookie
         setCookie(cookieName, env);
         return env;
     };

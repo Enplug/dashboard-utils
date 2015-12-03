@@ -50,15 +50,15 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
 
     // Returns an environment based on default key-value between domain
     // and inferred environment
-    function defaultEnvironment(context) {
+    this.getDefault = function () {
         var hosts = {
-                'dashboard.enplug.com': context.PRODUCTION,
-                'staging.enplug.com': context.STAGING
+                'dashboard.enplug.com': this.PRODUCTION,
+                'staging.enplug.com': this.STAGING
             },
             host = window.location.hostname;
 
-        return hosts[host] || context.STAGING;
-    }
+        return hosts[host] || this.STAGING;
+    };
 
     /**
      * Returns a string name of the current environment from param, cookies, or inferred from host name
@@ -87,7 +87,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         } else {
 
             // Default environment settings by host, or staging default
-            return defaultEnvironment(this);
+            return this.getDefault();
         }
     };
 

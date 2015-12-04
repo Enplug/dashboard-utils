@@ -53,6 +53,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     this.getDefault = function () {
         var hosts = {
                 'dashboard.enplug.com': this.PRODUCTION,
+                'login.enplug.com': this.PRODUCTION,
                 'staging.enplug.com': this.STAGING
             },
             host = window.location.hostname;

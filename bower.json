@@ -1,6 +1,6 @@
 {
   "name": "enplug-dashboard-utils",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "homepage": "https://github.com/Enplug/DashboardUtils",
   "authors": [
     "Alex Ross <alex@enplug.com>"
@@ -24,6 +24,7 @@
     "grunt"
   ],
   "dependencies": {
+    "angular": "~1.4.8",
     "lodash": "~3.10.0"
   }
 }

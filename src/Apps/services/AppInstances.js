@@ -112,14 +112,7 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         },
 
-        updateFrequencies: function (venueId, appInstances) {
-            var frequencies = [];
-            _.each(appInstances, function (appInstance) {
-                frequencies.push({
-                    AppInstanceId: appInstance.Id,
-                    FrequencyLevel: appInstance.FrequencyLevel
-                });
-            });
+        updateFrequencyLevels: function (venueId, frequencies) {
             return Endpoint.post({
                 path: 'AppInstances.setFrequencies',
                 data: {
@@ -130,7 +123,18 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             });
         },
 
-        updateFrequency: function (venueId, instanceId, frequencyLevel) {
+        updateFrequencyPercentages: function (venueId, frequencies) {
+            return Endpoint.post({
+                path: 'AppInstances.setFrequencies',
+                data: {
+                    VenueId: venueId,
+                    UseFrequencyLevels: false,
+                    Frequencies: frequencies
+                }
+            });
+        },
+
+        updateFrequencyLevel: function (venueId, instanceId, frequencyLevel) {
             return Endpoint.post({
                 path: 'AppInstances.setFrequency',
                 data: {

@@ -7,7 +7,6 @@
         "uglify:build"
     ],
     "version": [
-        "checkbranch:!master",
         "checkrepo:version",
         "prompt:version",
         "bump"

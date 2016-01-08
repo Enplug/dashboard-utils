@@ -57,12 +57,12 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
             return Endpoint.get({
                 path: 'AppInstances.loadForAccountByApp',
                 params: params,
-                parse: function (instances) {
-                    instances.forEach(function (instance) {
+                parse: function (response) {
+                    response['AppInstances'].forEach(function (instance) {
                         AppUtilities.parseJson(instance.Assets);
                     });
 
-                    return instances;
+                    return response;
                 }
             })
         },

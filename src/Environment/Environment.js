@@ -39,7 +39,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     //  prod apps are on .net
     //  staging apps and dashboard are on .in
     //  local is for local dev envs (must be set in your computers "hosts" file to 127.0.0.1)
-    domainEnvMap = Object.assign( Object.create( null ), {
+    domainEnvMap = angular.extend( Object.create( null ), {
         'enplug.com': this.PRODUCTION,
         'enplug.net': this.PRODUCTION,
         'enplug.in': this.STAGING,

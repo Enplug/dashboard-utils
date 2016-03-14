@@ -40,7 +40,12 @@ angular.module('enplug.utils').factory('EndpointCall',
         function stopBrowserLoading(iframe) {
             if (iframe) {
                 $timeout(function () {
-                    iframe.remove();
+                    console.log( 'remove in iframe? ' + ('remove' in iframe) );
+                    console.dir( iframe );
+                    console.dir( iframe.remove );
+                    console.log( iframe.remove.toString() );
+
+                    angular.element( iframe ).remove();
                 }, 200);
             }
         }

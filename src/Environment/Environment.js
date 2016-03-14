@@ -1,7 +1,6 @@
 angular.module('enplug.utils.environment', []).provider('Environment', function () {
     'use strict';
 
-    // TODO remove console.log statements
     var cookieName = 'ENVIRONMENT',
         paramName = cookieName.toLowerCase(),
         domainEnvMap,
@@ -148,7 +147,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
             cookieFields.push( 'secure' );
         }
 
-        console.log( 'Environment _setCookie: setting cookie to ' + cookieFields.join( '; ' ));
+//        console.log( 'Environment _setCookie: setting cookie to ' + cookieFields.join( '; ' ));
         document.cookie = cookieFields.join( '; ' );
         return true;
     }
@@ -168,15 +167,15 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     // Returns an environment based on default key-value between domain
     // and inferred environment
     this.getDefault = function() {
-        console.log( 'Environment.getDefault(): using host ' + window.location.hostname );
+//        console.log( 'Environment.getDefault(): using host ' + window.location.hostname );
         var hostLessSubdomain = window.location.hostname.split( '.' ).slice( 1 ).join( '.' );
 
         if ( hostLessSubdomain in domainEnvMap ) {
-            console.log( 'Environment.getDefault(): found current domain in domain to env map => ' + hostLessSubdomain + ':' + domainEnvMap[ hostLessSubdomain ]);
+//            console.log( 'Environment.getDefault(): found current domain in domain to env map => ' + hostLessSubdomain + ':' + domainEnvMap[ hostLessSubdomain ]);
             return domainEnvMap[ hostLessSubdomain ];
         }
 
-        console.log( 'Environment.getDefault(): couldn\'t find enpoint using fallback (staging)' );
+//        console.log( 'Environment.getDefault(): couldn\'t find enpoint using fallback (staging)' );
         return fallbackEnv;
     };
 
@@ -186,7 +185,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
      * @returns {String}
      */
     this.get = function() {
-        console.log( 'Environment.get() => ' + currentEnv );
+//        console.log( 'Environment.get() => ' + currentEnv );
         return currentEnv;
     };
 
@@ -252,17 +251,17 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
 
         // lookup+set from query param
         if ( paramValue != null && this.isValidEnvValue( paramValue )) {
-            console.log( 'Environment: found initial env in query param => ' + paramValue );
+//            console.log( 'Environment: found initial env in query param => ' + paramValue );
             return setEnv( paramValue );
         }
 
         // lookup from cookie (no need to set here)
         if ( cookieValue != null && this.isValidEnvValue( cookieValue )) {
-            console.log( 'Environment: found initial env in cookie => ' + cookieValue );
+//            console.log( 'Environment: found initial env in cookie => ' + cookieValue );
             return currentEnv = cookieValue;
         }
 
-        console.log( 'Environment: falling back to getDefault function' );
+//        console.log( 'Environment: falling back to getDefault function' );
         // lookup+set from hostname
         return setEnv( this.getDefault() );
     }).call( this );

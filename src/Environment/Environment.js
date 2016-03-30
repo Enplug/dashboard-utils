@@ -209,6 +209,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
             },
             staging: {
                 adserver: 'https://staging-adserver.enplug.com/v1',
+                monitoring: 'https://staging-monitoring.enplug.com/v1',
                 social: 'https://staging-social.enplug.com/v1'
             },
             prod: {

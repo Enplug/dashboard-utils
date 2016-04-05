@@ -1698,11 +1698,12 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
             },
             staging: {
                 adserver: 'https://staging-adserver.enplug.com/v1',
+                monitoring: 'https://staging-adserver.enplug.com/v1/edumonitoring/edumonitoring',
                 social: 'https://staging-social.enplug.com/v1'
             },
             prod: {
                 adserver: 'https://adservernet.enplug.com/v1',
-                monitoring: 'https://monitoring.enplug.com/v1',
+                monitoring: 'https://monitoring.enplug.com/v1/edumonitoring',
                 social: 'https://social-server.enplug.com/v1'
             }
         };

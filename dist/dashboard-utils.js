@@ -416,6 +416,7 @@ angular.module('enplug.utils.apps').constant('AppEndpoints', {
         loadAllByVenue: '/appframework/appinstances/byvenue',
         loadAllByApp: '/appframework/appinstances/byapp',
         loadForAccountByApp: '/appframework/assets/byaccount',
+        loadActiveByAccount: '/appframework/activeapps/byaccount', //?token&accountid
         start: '/appframework/appinstance/start',
         stop: '/appframework/appinstance/stop',
         setFrequencies: '/appframework/appinstances/frequencies',
@@ -633,6 +634,19 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
     'use strict';
 
     return {
+
+        loadActiveAppsForAccount: function(accountId) {
+            return Endpoint.get({
+                path: 'AppInstances.loadActiveByAccount',
+                params: {
+                    accountid: accountId
+                },
+                parse: function (apps) {
+                    console.log('hey active %o', apps);
+                    return apps;
+                }
+            })
+        },
 
         loadInstance: function (instanceId) {
             return Endpoint.get({

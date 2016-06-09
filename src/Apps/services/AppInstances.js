@@ -3,6 +3,19 @@ angular.module('enplug.utils.apps').factory('AppInstances', function (Endpoint, 
 
     return {
 
+        loadActiveAppsForAccount: function(accountId) {
+            return Endpoint.get({
+                path: 'AppInstances.loadActiveByAccount',
+                params: {
+                    accountid: accountId
+                },
+                parse: function (apps) {
+                    console.log('hey active %o', apps);
+                    return apps;
+                }
+            })
+        },
+
         loadInstance: function (instanceId) {
             return Endpoint.get({
                 path: 'AppInstances.load',

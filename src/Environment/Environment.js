@@ -46,16 +46,6 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         'enplug.loc': this.DEV
     });
 
-    // prevent security errors on safari
-    if ( this.isProduction() ) {
-        document.domain = 'enplug.com';
-    } else if ( this.isStaging() ) {
-        document.domain = 'enplug.in';
-    } else if ( this.isDev() ) {
-        document.domain = 'enplug.loc';
-    }
-    console.log('Environment initialized to', document.domain);
-
     /**********************
      *** HELPERS
      **********************/
@@ -277,4 +267,15 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         // lookup+set from hostname
         return setEnv( this.getDefault() );
     }).call( this );
+
+     // prevent security errors on Safari
+    if ( this.isProduction() ) {
+        document.domain = 'enplug.com';
+    } else if ( this.isStaging() ) {
+        document.domain = 'enplug.in';
+    } else if ( this.isDev() ) {
+        document.domain = 'enplug.loc';
+    }
+    console.log('Environment initialized to', document.domain);
+
 });

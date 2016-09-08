@@ -876,6 +876,24 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
         };
     }]);
 
+/* Set current domain ahead to prevent security errors especially in IE and Safari */
+var extension = location.host.split('.').pop();
+switch ( extension ) {
+    case 'com' :
+    case 'net' :
+        document.domain = 'enplug.com';
+        break;
+    case 'in' :
+        document.domain = 'enplug.in';
+        break;
+    case 'loc' :
+    case 'local' :
+    default :
+        document.domain = 'enplug.loc';
+        break;
+}
+console.log('Environment initialized to', document.domain);
+
 angular.module('enplug.utils.environment', []).provider('Environment', function () {
     'use strict';
 
@@ -1145,16 +1163,6 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         // lookup+set from hostname
         return setEnv( this.getDefault() );
     }).call( this );
-
-     // prevent security errors on Safari
-    if ( this.isProduction() ) {
-        document.domain = 'enplug.com';
-    } else if ( this.isStaging() ) {
-        document.domain = 'enplug.in';
-    } else if ( this.isDev() ) {
-        document.domain = 'enplug.loc';
-    }
-    console.log('Environment initialized to', document.domain);
 
 });
 

@@ -46,6 +46,16 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         'enplug.loc': this.DEV
     });
 
+    // prevent security errors on safari
+    if ( this.isProduction() ) {
+        document.domain = 'enplug.com';
+    } else if ( this.isStaging() ) {
+        document.domain = 'enplug.in';
+    } else if ( this.isDev() ) {
+        document.domain = 'enplug.loc';
+    }
+    console.log('Environment initialized to', document.domain);
+
     /**********************
      *** HELPERS
      **********************/
@@ -261,15 +271,6 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         if ( cookieValue != null && this.isValidEnvValue( cookieValue )) {
 //            console.log( 'Environment: found initial env in cookie => ' + cookieValue );
             return currentEnv = cookieValue;
-        }
-
-        // prevent security errors on safari
-        if ( this.isProduction() ) {
-            document.domain = 'enplug.com';
-        } else if ( this.isStaging() ) {
-            document.domain = 'enplug.in';
-        } else if ( this.isDev() ) {
-            document.domain = 'enplug.loc';
         }
 
 //        console.log( 'Environment: falling back to getDefault function' );

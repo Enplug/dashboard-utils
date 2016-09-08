@@ -1,7 +1,7 @@
 {
   "name": "dashboard-utils",
   "private": true,
-  "version": "6.0.0",
+  "version": "6.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/Enplug/dashboard-utils.git",

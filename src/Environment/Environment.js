@@ -263,6 +263,15 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
             return currentEnv = cookieValue;
         }
 
+        // prevent security errors on safari
+        if ( this.isProduction() ) {
+            document.domain = 'enplug.com';
+        } else if ( this.isStaging() ) {
+            document.domain = 'enplug.in';
+        } else if ( this.isDev() ) {
+            document.domain = 'enplug.loc';
+        }
+
 //        console.log( 'Environment: falling back to getDefault function' );
         // lookup+set from hostname
         return setEnv( this.getDefault() );

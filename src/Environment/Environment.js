@@ -42,7 +42,8 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         'enplug.com': this.PRODUCTION,
         'enplug.net': this.PRODUCTION,
         'enplug.in': this.STAGING,
-        'enplug.local': this.STAGING
+        'enplug.local': this.DEV,
+        'enplug.loc': this.DEV
     });
 
     /**********************

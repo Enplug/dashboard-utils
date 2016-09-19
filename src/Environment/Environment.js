@@ -2,15 +2,12 @@
 var extension = location.host.split('.').pop();
 switch ( extension ) {
     case 'com' :
-    case 'net' :
         document.domain = 'enplug.com';
         break;
     case 'in' :
         document.domain = 'enplug.in';
         break;
     case 'loc' :
-    case 'local' :
-    default :
         document.domain = 'enplug.loc';
         break;
 }

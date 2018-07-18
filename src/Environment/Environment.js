@@ -45,7 +45,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     });
 
     // set 'fallback' environment enum here for easy changing later
-    fallbackEnv = this.STAGING;
+    fallbackEnv = this.PRODUCTION;
 
     // maps domains to expected environment
     // todo remove these notes below (maybe?)
@@ -255,7 +255,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
      *   1) query param: ?environment=X
      *   2) cookie: ENVIRONMENT=X
      *   3) infer from hostname
-     *   4) fallback to staging
+     *   4) fallback to production
      **********************/
     // closure wrapped to keep provider namespace clean
     // also this only needs to run once, no need to hold on the the memory

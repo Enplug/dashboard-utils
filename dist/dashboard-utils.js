@@ -923,7 +923,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     });
 
     // set 'fallback' environment enum here for easy changing later
-    fallbackEnv = this.STAGING;
+    fallbackEnv = this.PRODUCTION;
 
     // maps domains to expected environment
     // todo remove these notes below (maybe?)
@@ -1133,7 +1133,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
      *   1) query param: ?environment=X
      *   2) cookie: ENVIRONMENT=X
      *   3) infer from hostname
-     *   4) fallback to staging
+     *   4) fallback to production
      **********************/
     // closure wrapped to keep provider namespace clean
     // also this only needs to run once, no need to hold on the the memory
@@ -1185,7 +1185,7 @@ angular.module('enplug.utils').constant('ResourceTypes', {
 });
 angular.module('dashboard-utils-templates', ['Confirm/confirm-dialog.tpl']);
 
-angular.module("Confirm/confirm-dialog.tpl", []).run(["$templateCache", function($templateCache) {
+angular.module("Confirm/confirm-dialog.tpl", []).run(["$templateCache", function ($templateCache) {
     "use strict";
     $templateCache.put("Confirm/confirm-dialog.tpl",
         "<header><h2 ng-bind=title></h2></header><section><p ng-bind-html=text></p></section><footer><button class=\"btn btn-default\" ng-bind=cancelText ng-click=closeThisDialog()></button> <button class=btn ng-class=confirmClass ng-bind=confirmText ng-click=confirm()></button></footer>");

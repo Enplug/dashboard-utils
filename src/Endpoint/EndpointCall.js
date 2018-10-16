@@ -1,5 +1,5 @@
 angular.module('enplug.utils').factory('EndpointCall',
-    function($http, $q, $log, $timeout, EndpointOptions) {
+    function($http, $q, $log, $rootScope, $timeout, EndpointOptions) {
         'use strict';
 
         function debug(config, message, data) {
@@ -72,6 +72,16 @@ angular.module('enplug.utils').factory('EndpointCall',
         }
 
         /**
+         * Handle error code
+         * @param errorCode String
+         */
+        function handleError(errorCode) {
+            if (errorCode === 'NoAccessToken' || errorCode === 'InvalidAccessToken') {
+                $rootScope.$broadcast('EndpointCall:tokenError');
+            }
+        }
+
+        /**
          * HTTP Request
          * Success: returns data object
          * Error: returns string
@@ -109,6 +119,8 @@ angular.module('enplug.utils').factory('EndpointCall',
                         warn(settings, 'Check response callback is not a valid function:', settings);
                     }
                     if (response.data.error) {
+                        handleError(response.data.errorCode);
+
                         error(settings, 'API error, full $http response: ', response);
                         // Error callback registered by the caller
                         errorCallback(response.data, settings);

@@ -2,6 +2,10 @@
   "name": "@enplug/dashboard-utils",
   "private": false,
   "version": "6.0.7",
+  "scripts": {
+    "build": "grunt build",
+    "postinstall": "bower install"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Enplug/dashboard-utils.git",

@@ -479,7 +479,7 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
 }]);
 
 angular.module('enplug.utils').factory('EndpointCall',
-    function($http, $q, $log, $timeout, EndpointOptions) {
+    function($http, $q, $log, $rootScope, $timeout, EndpointOptions) {
         'use strict';
 
         function debug(config, message, data) {
@@ -552,6 +552,16 @@ angular.module('enplug.utils').factory('EndpointCall',
         }
 
         /**
+         * Handle error code
+         * @param errorCode String
+         */
+        function handleError(errorCode) {
+            if (errorCode === 'NoAccessToken' || errorCode === 'InvalidAccessToken') {
+                $rootScope.$broadcast('EndpointCall:tokenError');
+            }
+        }
+
+        /**
          * HTTP Request
          * Success: returns data object
          * Error: returns string
@@ -589,6 +599,8 @@ angular.module('enplug.utils').factory('EndpointCall',
                         warn(settings, 'Check response callback is not a valid function:', settings);
                     }
                     if (response.data.error) {
+                        handleError(response.data.errorCode);
+
                         error(settings, 'API error, full $http response: ', response);
                         // Error callback registered by the caller
                         errorCallback(response.data, settings);
@@ -724,8 +736,16 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
             if (Object.keys(persistentParams).length) {
                 debug(config, 'Persistent parameters available:', persistentParams);
                 if (options.useToken && options.usePersistentParams) {
+                    var appliedPersistentParams = Object.assign({}, persistentParams);
+
+                    // Handle the token persistent param as the Authorization Bearer value
+                    if (appliedPersistentParams['token']) {
+                        options.headers['Authorization'] = 'Bearer ' + persistentParams['token'];
+                        delete appliedPersistentParams['token'];
+                    }
+
                     // params overwrite persistent params
-                    options.params = _.merge({}, persistentParams, options.params);
+                    options.params = _.merge({}, appliedPersistentParams, options.params);
                     debug(config, 'Persistent params applied. Parameters:', options.params);
                 } else {
                     debug(config, 'Persistent params not applied.');
@@ -832,7 +852,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
          * Processes each result, pulling our data out from the Result: key or registering Success: false
          *
          * @param result {{data: object, error: boolean, reason: string}}
-         * @returns result {{data: object, error: boolean, reason: string}}
+         * @returns result {{data: object, error: boolean, errorCode: string, reason: string}}
          */
         function defaultCheckResponse(result, config) {
             debug(config, 'Running default check response on result:', result.data);
@@ -841,6 +861,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
             if (data.Success === false || angular.isUndefined(data.Result)) {
                 debug(config, 'API failure. Success was false or Result was undefined.');
                 result.error = true;
+                result.errorCode = data.ErrorCode;
                 result.reason = data.ErrorMessage;
             } else {
                 debug(config, 'API success');

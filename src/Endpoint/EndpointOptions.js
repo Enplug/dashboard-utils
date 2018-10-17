@@ -98,7 +98,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
             if (Object.keys(persistentParams).length) {
                 debug(config, 'Persistent parameters available:', persistentParams);
                 if (options.useToken && options.usePersistentParams) {
-                    let appliedPersistentParams = Object.assign({}, persistentParams);
+                    var appliedPersistentParams = Object.assign({}, persistentParams);
 
                     // Handle the token persistent param as the Authorization Bearer value
                     if (appliedPersistentParams['token']) {

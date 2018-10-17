@@ -506,25 +506,6 @@ angular.module('enplug.utils').factory('EndpointCall',
             log(config, message, data, 'error');
         }
 
-        function startBrowserLoading() {
-            if (!document.getElementById('noisey-endpoint')) {
-                var iframe = document.createElement('iframe');
-                iframe.src = '//loading.enplug.com';
-                iframe.style.display = 'none';
-                iframe.setAttribute('id', 'noisy-iframe');
-                document.body.appendChild(iframe);
-            }
-            return iframe;
-        }
-
-        function stopBrowserLoading(iframe) {
-            if (iframe) {
-                $timeout(function () {
-                    angular.element( iframe ).remove();
-                }, 200);
-            }
-        }
-
         /**
          * Success callback called after every successful API response.
          * @param data
@@ -563,12 +544,6 @@ angular.module('enplug.utils').factory('EndpointCall',
             var settings = EndpointOptions.new(config);
             if (_.isString(settings.url)) {
                 debug(settings, 'Making EndpointCall with EndpointOptions:', settings);
-
-                // If enabled, start the browser loading indicator
-                if (settings.noisy) {
-                    debug(settings, 'Trigger browser loading state.');
-                    var iframe = startBrowserLoading();
-                }
 
                 // Make the call
                 return $http({
@@ -610,8 +585,6 @@ angular.module('enplug.utils').factory('EndpointCall',
                     error(settings, 'HTTP error, full $http response: ', response);
                     errorCallback(error.data, settings);
                     return $q.reject(_.get(error.data, 'reason'));
-                }).finally(function () {
-                    stopBrowserLoading(iframe);
                 });
             } else {
                 error(config, 'Invalid URL given to EndpointCall. EndpointOptions:', settings);

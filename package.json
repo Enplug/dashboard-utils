@@ -1,10 +1,11 @@
 {
   "name": "@enplug/dashboard-utils",
   "private": false,
-  "version": "6.0.7",
+  "version": "6.0.9",
   "scripts": {
     "build": "grunt build",
-    "postinstall": "bower install"
+    "watch": "grunt watch",
+    "prepare": "bower install"
   },
   "repository": {
     "type": "git",

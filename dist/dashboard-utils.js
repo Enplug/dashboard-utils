@@ -537,7 +537,7 @@ angular.module('enplug.utils').factory('EndpointCall',
          * @param errorCode String
          */
         function handleError(errorCode) {
-            if (errorCode === 'NoAccessToken' || errorCode === 'InvalidAccessToken') {
+            if (errorCode === 'NoAccessToken' || errorCode === 'InvalidAccessToken' || errorCode === 'AccessDenied') {
                 $rootScope.$broadcast('EndpointCall:tokenError');
             }
         }

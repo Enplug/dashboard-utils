@@ -1,16 +1,7 @@
-<h2>Dependencies:</h2>
-- angularjs 1.4+
-- Lodash
-- ngDialog (Confirm)
-- angular-sanitize
-- angular-cookies
-
-<h2>Contributing</h2>
-
 <h5>Build:</h5>
 1. `git clone`
 2. `npm install`
-3. `grunt build`/`grunt watch`
+3. `npm build`/`npm watch`
 
 <h5>Develop:</h5>
 1. New branch

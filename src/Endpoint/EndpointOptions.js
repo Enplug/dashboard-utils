@@ -98,8 +98,16 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
             if (Object.keys(persistentParams).length) {
                 debug(config, 'Persistent parameters available:', persistentParams);
                 if (options.useToken && options.usePersistentParams) {
+                    var appliedPersistentParams = Object.assign({}, persistentParams);
+
+                    // Handle the token persistent param as the Authorization Bearer value
+                    if (appliedPersistentParams['token']) {
+                        options.headers['Authorization'] = 'Bearer ' + persistentParams['token'];
+                        delete appliedPersistentParams['token'];
+                    }
+
                     // params overwrite persistent params
-                    options.params = _.merge({}, persistentParams, options.params);
+                    options.params = _.merge({}, appliedPersistentParams, options.params);
                     debug(config, 'Persistent params applied. Parameters:', options.params);
                 } else {
                     debug(config, 'Persistent params not applied.');
@@ -206,7 +214,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
          * Processes each result, pulling our data out from the Result: key or registering Success: false
          *
          * @param result {{data: object, error: boolean, reason: string}}
-         * @returns result {{data: object, error: boolean, reason: string}}
+         * @returns result {{data: object, error: boolean, errorCode: string, reason: string}}
          */
         function defaultCheckResponse(result, config) {
             debug(config, 'Running default check response on result:', result.data);
@@ -215,6 +223,7 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
             if (data.Success === false || angular.isUndefined(data.Result)) {
                 debug(config, 'API failure. Success was false or Result was undefined.');
                 result.error = true;
+                result.errorCode = data.ErrorCode;
                 result.reason = data.ErrorMessage;
             } else {
                 debug(config, 'API success');

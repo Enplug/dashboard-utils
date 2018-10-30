@@ -1,7 +1,7 @@
 {
   "name": "@enplug/dashboard-utils",
   "private": false,
-  "version": "6.0.10",
+  "version": "6.0.11",
   "scripts": {
     "build": "grunt build",
     "watch": "grunt watch",

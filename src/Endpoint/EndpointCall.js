@@ -57,7 +57,7 @@ angular.module('enplug.utils').factory('EndpointCall',
          * @param errorCode String
          */
         function handleError(errorCode) {
-            if (errorCode === 'NoAccessToken' || errorCode === 'InvalidAccessToken' || errorCode === 'AccessDenied') {
+            if (errorCode === 'NoAccessToken' || errorCode === 'InvalidAccessToken') {
                 $rootScope.$broadcast('EndpointCall:tokenError');
             }
         }
@@ -95,6 +95,17 @@ angular.module('enplug.utils').factory('EndpointCall',
                     }
                     if (response.data.error) {
                         handleError(response.data.errorCode);
+
+                        // TODO: remove these two console.logs after random logout fix (10/26/2018)
+                        console.log('API error, request data: ' + JSON.stringify({
+                            method: settings.method,
+                            headers: settings.headers,
+                            url: settings.url,
+                            cache: settings.cache,
+                            data: settings.data,
+                            params: settings.params
+                        }));
+                        console.log('API error, response: ' + JSON.stringify(response));
 
                         error(settings, 'API error, full $http response: ', response);
                         // Error callback registered by the caller

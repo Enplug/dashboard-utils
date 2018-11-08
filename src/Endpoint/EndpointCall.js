@@ -83,7 +83,8 @@ angular.module('enplug.utils').factory('EndpointCall',
                     cache: settings.cache,
                     data: settings.data,
                     params: settings.params,
-                    transformResponse: settings.transformResponse
+                    transformResponse: settings.transformResponse,
+                    withCredentials: settings.withCredentials
                 }).then(function (response) {
                     debug(settings, '$http returned with response:', response);
                     if (angular.isFunction(settings.checkResponse)) {
@@ -103,7 +104,8 @@ angular.module('enplug.utils').factory('EndpointCall',
                             url: settings.url,
                             cache: settings.cache,
                             data: settings.data,
-                            params: settings.params
+                            params: settings.params,
+                            withCredentials: settings.withCredentials
                         }));
                         console.log('API error, response: ' + JSON.stringify(response));
 

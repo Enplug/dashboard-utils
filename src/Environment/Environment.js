@@ -220,9 +220,9 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     this.hosts = function() {
         return {
             dev: {
-                adserver: 'https://staging-adserver.enplug.in/v1',
-                monitoring: 'https://staging-monitoring.enplug.in/v1/edumonitoring/edumonitoring',
-                social: 'https://staging-social.enplug.in/v1'
+                adserver: 'https://dev-adserver.enplug.in/v1',
+                monitoring: 'https://dev-monitoring.enplug.in/v1/edumonitoring/edumonitoring',
+                social: 'https://dev-social.enplug.in/v1'
             },
             staging: {
                 adserver: 'https://staging-adserver.enplug.in/v1',

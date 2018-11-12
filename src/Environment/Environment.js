@@ -1,5 +1,5 @@
 /* Set current domain ahead to prevent security errors especially in IE and Safari */
-var extension = location.host.split('.').pop();
+var extension = location.hostname.split('.').pop();
 switch ( extension ) {
     case 'com' :
         document.domain = 'enplug.com';
@@ -18,7 +18,6 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
 
     var cookieName = 'ENVIRONMENT',
         paramName = cookieName.toLowerCase(),
-        domainEnvMap,
         fallbackEnv,
         currentEnv;
 
@@ -46,20 +45,6 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
 
     // set 'fallback' environment enum here for easy changing later
     fallbackEnv = this.PRODUCTION;
-
-    // maps domains to expected environment
-    // todo remove these notes below (maybe?)
-    //  prod dashboard is on .com
-    //  prod apps are on .net
-    //  staging apps and dashboard are on .in
-    //  local is for local dev envs (must be set in your computers "hosts" file to 127.0.0.1)
-    domainEnvMap = angular.extend( Object.create( null ), {
-        'enplug.com': this.PRODUCTION,
-        'enplug.net': this.PRODUCTION,
-        'enplug.in': this.STAGING,
-        'enplug.local': this.DEV,
-        'enplug.loc': this.DEV
-    });
 
     /**********************
      *** HELPERS
@@ -183,16 +168,38 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     // Returns an environment based on default key-value between domain
     // and inferred environment
     this.getDefault = function() {
-//        console.log( 'Environment.getDefault(): using host ' + window.location.hostname );
-        var hostLessSubdomain = window.location.hostname.split( '.' ).slice( 1 ).join( '.' );
+        var hostname = window.location.hostname;
+        var hostLessSubdomain = hostname.split('.').slice(1).join('.');
+        var localOrDevRegexp = /(local|dev)-[\w]*\.enplug\.in/i;
 
-        if ( hostLessSubdomain in domainEnvMap ) {
-//            console.log( 'Environment.getDefault(): found current domain in domain to env map => ' + hostLessSubdomain + ':' + domainEnvMap[ hostLessSubdomain ]);
-            return domainEnvMap[ hostLessSubdomain ];
+        if (hostLessSubdomain === 'enplug.com' || hostLessSubdomain === 'enplug.net') {
+            // enplug.com or enplug.net
+            return this.PRODUCTION;
+        } else if (localOrDevRegexp.test(hostname)) {
+            // dev-xxx.enplug.in or local-xxx.enplug.in
+            return this.DEV;
+        } else if (hostLessSubdomain === 'enplug.in') {
+            // if not dev or local and enplug.in
+            return this.STAGING;
+        } else if (hostLessSubdomain === 'enplug.loc' || hostLessSubdomain === 'enplug.local') {
+            // legacy enplug.loc or enplug.local
+            return this.DEV;
         }
 
-//        console.log( 'Environment.getDefault(): couldn\'t find enpoint using fallback (staging)' );
+        // fallback for domain not found
+        console.warn('Could not determine the environment for hostname ' + hostname + ', falling back to', fallbackEnv);
         return fallbackEnv;
+    };
+
+    this.getEnvironmentPrefix = function() {
+        var regexp = /(local|dev)-[\w]*\.enplug\.in/i;
+        var matches = regexp.exec(window.location.hostname);
+
+        if (matches && matches[1]) {
+            return matches[1] + '-'; // local- or dev-
+        } else {
+            return '';
+        }
     };
 
     /**

@@ -87,7 +87,8 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
                 successMessage: null,
                 errorMessage: null,
                 usePersistentParams: true,
-                persistentParams: persistentParams // for logging
+                persistentParams: persistentParams, // for logging
+                withCredentials: true // should send auth cookies
             };
 
             var options = _.merge({}, availableOptions, config);

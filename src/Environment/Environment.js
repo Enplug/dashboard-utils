@@ -228,12 +228,12 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         return {
             dev: {
                 adserver: 'https://dev-adserver.enplug.in/v1',
-                monitoring: 'https://dev-monitoring.enplug.in/v1/edumonitoring/edumonitoring',
+                monitoring: 'https://dev-monitoring.enplug.in/v1/edumonitoring',
                 social: 'https://dev-social.enplug.in/v1'
             },
             staging: {
                 adserver: 'https://staging-adserver.enplug.in/v1',
-                monitoring: 'https://staging-monitoring.enplug.in/v1/edumonitoring/edumonitoring',
+                monitoring: 'https://staging-monitoring.enplug.in/v1/edumonitoring',
                 social: 'https://staging-social.enplug.in/v1'
             },
             prod: {

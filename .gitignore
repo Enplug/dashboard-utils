@@ -25,3 +25,5 @@ tmp/*
 *.sublime-workspace
 */*.sublime-workspace
 **/*.sublime-workspace
+
+**/.vscode/**

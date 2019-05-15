@@ -478,8 +478,8 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
     };
 }]);
 
-angular.module('enplug.utils').factory('EndpointCall',
-    function($http, $q, $log, $rootScope, $timeout, EndpointOptions) {
+angular.module('enplug.utils').factory('EndpointCall', ['$http', '$q', '$log', '$rootScope', 'EndpointOptions',
+    function($http, $q, $log, $rootScope, EndpointOptions) {
         'use strict';
 
         function debug(config, message, data) {
@@ -620,7 +620,7 @@ angular.module('enplug.utils').factory('EndpointCall',
         };
 
     }
-);
+]);
 
 angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment', '$httpParamSerializerJQLike',
     function ($log, Environment, $httpParamSerializerJQLike) {

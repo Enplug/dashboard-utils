@@ -717,6 +717,19 @@ angular.module('enplug.utils').factory('EndpointOptions', ['$log', 'Environment'
 
             var options = _.merge({}, availableOptions, config);
 
+            // Copy headers set to undefined as `_.merge` skips them.
+            // Use case: `Content-Type` must be set to undefined for multipart uploads.
+            if (config && config.headers)
+            {
+                Object.keys(config.headers)
+                    .filter(function (key) {
+                        return config.headers[key] === undefined;
+                    })
+                    .forEach(function (key) {
+                        options.headers[key] = undefined;
+                    });
+            }
+
             debug(config, 'Options before processing:', options);
 
             // Add persistent params if we want them

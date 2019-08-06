@@ -6,19 +6,21 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
     // Todo take a value for confirm. Hook into pre-close callback, e.g. type name of venue before deleting.
 
     var defaults = {
-            title: 'Default',
-            text: 'Default',
-            cancelText: 'Cancel',
-            confirmText: 'Confirm',
-            confirmClass: 'btn-primary'
-        },
-        unsavedChangesDefaults = {
-            title: 'Please Confirm',
-            text: 'There are unsaved changes. Are you sure you want to continue and discard your changes?',
-            cancelText: 'Cancel',
-            confirmText: 'Discard Changes',
-            confirmClass: 'btn-primary'
-        };
+        title: 'Default',
+        text: 'Default',
+        cancelText: 'Cancel',
+        confirmText: 'Confirm',
+        confirmClass: 'btn-primary',
+        dialogClass: 'confirm-dialog'
+    };
+    var unsavedChangesDefaults = {
+        title: 'Please Confirm',
+        text: 'There are unsaved changes. Are you sure you want to continue and discard your changes?',
+        cancelText: 'Cancel',
+        confirmText: 'Discard Changes',
+        confirmClass: 'btn-primary',
+        dialogClass: 'confirm-dialog'
+    };
 
     return {
         open: function (opts) {
@@ -35,7 +37,7 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
                     $scope.confirmText = opts.confirmText;
                     $scope.confirmClass = opts.confirmClass;
                 }],
-                className: 'confirm-dialog',
+                className: opts.dialogClass,
                 showClose: false, // no X in the top right
                 trapFocus: false // prevents cancel button from getting auto-focused
             });

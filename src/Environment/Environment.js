@@ -227,17 +227,17 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
     this.hosts = function() {
         return {
             dev: {
-                adserver: 'https://dev-adserver.enplug.in/v1',
+                core: 'https://dev-core.enplug.in/v1',
                 monitoring: 'https://dev-monitoring.enplug.in/v1/edumonitoring',
                 social: 'https://dev-social.enplug.in/v1'
             },
             staging: {
-                adserver: 'https://staging-adserver.enplug.in/v1',
+                core: 'https://staging-core.enplug.in/v1',
                 monitoring: 'https://staging-monitoring.enplug.in/v1/edumonitoring',
                 social: 'https://staging-social.enplug.in/v1'
             },
             prod: {
-                adserver: 'https://adservernet.enplug.com/v1',
+                core: 'https://core.enplug.com/v1',
                 monitoring: 'https://monitoring.enplug.com/v1/edumonitoring',
                 social: 'https://social-server.enplug.com/v1'
             }
@@ -248,7 +248,7 @@ angular.module('enplug.utils.environment', []).provider('Environment', function 
         var env = this.hosts()[ this.get() ];
         return type ?
            env[ type ] :
-           ( env.adserver || env );
+           ( env.core || env );
     };
 
     this.$get = function() {

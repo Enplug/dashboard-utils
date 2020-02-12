@@ -5,7 +5,7 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
     // Todo tooltips in template? custom html?/body partials?
     // Todo take a value for confirm. Hook into pre-close callback, e.g. type name of venue before deleting.
 
-    const defaults = {
+    var defaults = {
         title: 'Default',
         text: 'Default',
         cancelText: 'Cancel',
@@ -13,7 +13,7 @@ angular.module('enplug.utils.confirm', ['Confirm/confirm-dialog.tpl']).service('
         confirmClass: 'btn-primary',
         dialogClass: 'confirm-dialog'
     };
-    const unsavedChangesDefaults = {
+    var unsavedChangesDefaults = {
         title: 'Please Confirm',
         text: 'There are unsaved changes. Are you sure you want to continue and discard your changes?',
         cancelText: 'Cancel',
